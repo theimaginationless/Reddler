@@ -1,0 +1,609 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B29A30FC25ADC76D0013D067 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29A30FB25ADC76D0013D067 /* AppDelegate.swift */; };
+		B29A30FE25ADC76D0013D067 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29A30FD25ADC76D0013D067 /* SceneDelegate.swift */; };
+		B29A310025ADC76D0013D067 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29A30FF25ADC76D0013D067 /* ViewController.swift */; };
+		B29A310325ADC76D0013D067 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B29A310125ADC76D0013D067 /* Main.storyboard */; };
+		B29A310625ADC76D0013D067 /* Reddler.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B29A310425ADC76D0013D067 /* Reddler.xcdatamodeld */; };
+		B29A310825ADC7700013D067 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B29A310725ADC7700013D067 /* Assets.xcassets */; };
+		B29A310B25ADC7700013D067 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B29A310925ADC7700013D067 /* LaunchScreen.storyboard */; };
+		B29A311625ADC7700013D067 /* ReddlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29A311525ADC7700013D067 /* ReddlerTests.swift */; };
+		B29A312125ADC7700013D067 /* ReddlerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29A312025ADC7700013D067 /* ReddlerUITests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B29A311225ADC7700013D067 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B29A30F025ADC76C0013D067 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B29A30F725ADC76D0013D067;
+			remoteInfo = Reddler;
+		};
+		B29A311D25ADC7700013D067 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B29A30F025ADC76C0013D067 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B29A30F725ADC76D0013D067;
+			remoteInfo = Reddler;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		B29A30F825ADC76D0013D067 /* Reddler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reddler.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B29A30FB25ADC76D0013D067 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		B29A30FD25ADC76D0013D067 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		B29A30FF25ADC76D0013D067 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		B29A310225ADC76D0013D067 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		B29A310525ADC76D0013D067 /* Reddler.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Reddler.xcdatamodel; sourceTree = "<group>"; };
+		B29A310725ADC7700013D067 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B29A310A25ADC7700013D067 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		B29A310C25ADC7700013D067 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B29A311125ADC7700013D067 /* ReddlerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ReddlerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B29A311525ADC7700013D067 /* ReddlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReddlerTests.swift; sourceTree = "<group>"; };
+		B29A311725ADC7700013D067 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B29A311C25ADC7700013D067 /* ReddlerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ReddlerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B29A312025ADC7700013D067 /* ReddlerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReddlerUITests.swift; sourceTree = "<group>"; };
+		B29A312225ADC7700013D067 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B29A30F525ADC76D0013D067 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B29A310E25ADC7700013D067 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B29A311925ADC7700013D067 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		B29A30EF25ADC76C0013D067 = {
+			isa = PBXGroup;
+			children = (
+				B29A30FA25ADC76D0013D067 /* Reddler */,
+				B29A311425ADC7700013D067 /* ReddlerTests */,
+				B29A311F25ADC7700013D067 /* ReddlerUITests */,
+				B29A30F925ADC76D0013D067 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B29A30F925ADC76D0013D067 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B29A30F825ADC76D0013D067 /* Reddler.app */,
+				B29A311125ADC7700013D067 /* ReddlerTests.xctest */,
+				B29A311C25ADC7700013D067 /* ReddlerUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B29A30FA25ADC76D0013D067 /* Reddler */ = {
+			isa = PBXGroup;
+			children = (
+				B29A30FB25ADC76D0013D067 /* AppDelegate.swift */,
+				B29A30FD25ADC76D0013D067 /* SceneDelegate.swift */,
+				B29A30FF25ADC76D0013D067 /* ViewController.swift */,
+				B29A310125ADC76D0013D067 /* Main.storyboard */,
+				B29A310725ADC7700013D067 /* Assets.xcassets */,
+				B29A310925ADC7700013D067 /* LaunchScreen.storyboard */,
+				B29A310C25ADC7700013D067 /* Info.plist */,
+				B29A310425ADC76D0013D067 /* Reddler.xcdatamodeld */,
+			);
+			path = Reddler;
+			sourceTree = "<group>";
+		};
+		B29A311425ADC7700013D067 /* ReddlerTests */ = {
+			isa = PBXGroup;
+			children = (
+				B29A311525ADC7700013D067 /* ReddlerTests.swift */,
+				B29A311725ADC7700013D067 /* Info.plist */,
+			);
+			path = ReddlerTests;
+			sourceTree = "<group>";
+		};
+		B29A311F25ADC7700013D067 /* ReddlerUITests */ = {
+			isa = PBXGroup;
+			children = (
+				B29A312025ADC7700013D067 /* ReddlerUITests.swift */,
+				B29A312225ADC7700013D067 /* Info.plist */,
+			);
+			path = ReddlerUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B29A30F725ADC76D0013D067 /* Reddler */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B29A312525ADC7700013D067 /* Build configuration list for PBXNativeTarget "Reddler" */;
+			buildPhases = (
+				B29A30F425ADC76D0013D067 /* Sources */,
+				B29A30F525ADC76D0013D067 /* Frameworks */,
+				B29A30F625ADC76D0013D067 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Reddler;
+			productName = Reddler;
+			productReference = B29A30F825ADC76D0013D067 /* Reddler.app */;
+			productType = "com.apple.product-type.application";
+		};
+		B29A311025ADC7700013D067 /* ReddlerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B29A312825ADC7700013D067 /* Build configuration list for PBXNativeTarget "ReddlerTests" */;
+			buildPhases = (
+				B29A310D25ADC7700013D067 /* Sources */,
+				B29A310E25ADC7700013D067 /* Frameworks */,
+				B29A310F25ADC7700013D067 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B29A311325ADC7700013D067 /* PBXTargetDependency */,
+			);
+			name = ReddlerTests;
+			productName = ReddlerTests;
+			productReference = B29A311125ADC7700013D067 /* ReddlerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		B29A311B25ADC7700013D067 /* ReddlerUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B29A312B25ADC7700013D067 /* Build configuration list for PBXNativeTarget "ReddlerUITests" */;
+			buildPhases = (
+				B29A311825ADC7700013D067 /* Sources */,
+				B29A311925ADC7700013D067 /* Frameworks */,
+				B29A311A25ADC7700013D067 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B29A311E25ADC7700013D067 /* PBXTargetDependency */,
+			);
+			name = ReddlerUITests;
+			productName = ReddlerUITests;
+			productReference = B29A311C25ADC7700013D067 /* ReddlerUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B29A30F025ADC76C0013D067 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1230;
+				LastUpgradeCheck = 1230;
+				TargetAttributes = {
+					B29A30F725ADC76D0013D067 = {
+						CreatedOnToolsVersion = 12.3;
+					};
+					B29A311025ADC7700013D067 = {
+						CreatedOnToolsVersion = 12.3;
+						TestTargetID = B29A30F725ADC76D0013D067;
+					};
+					B29A311B25ADC7700013D067 = {
+						CreatedOnToolsVersion = 12.3;
+						TestTargetID = B29A30F725ADC76D0013D067;
+					};
+				};
+			};
+			buildConfigurationList = B29A30F325ADC76C0013D067 /* Build configuration list for PBXProject "Reddler" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = B29A30EF25ADC76C0013D067;
+			productRefGroup = B29A30F925ADC76D0013D067 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B29A30F725ADC76D0013D067 /* Reddler */,
+				B29A311025ADC7700013D067 /* ReddlerTests */,
+				B29A311B25ADC7700013D067 /* ReddlerUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B29A30F625ADC76D0013D067 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B29A310B25ADC7700013D067 /* LaunchScreen.storyboard in Resources */,
+				B29A310825ADC7700013D067 /* Assets.xcassets in Resources */,
+				B29A310325ADC76D0013D067 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B29A310F25ADC7700013D067 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B29A311A25ADC7700013D067 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B29A30F425ADC76D0013D067 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B29A310025ADC76D0013D067 /* ViewController.swift in Sources */,
+				B29A30FC25ADC76D0013D067 /* AppDelegate.swift in Sources */,
+				B29A310625ADC76D0013D067 /* Reddler.xcdatamodeld in Sources */,
+				B29A30FE25ADC76D0013D067 /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B29A310D25ADC7700013D067 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B29A311625ADC7700013D067 /* ReddlerTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B29A311825ADC7700013D067 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B29A312125ADC7700013D067 /* ReddlerUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B29A311325ADC7700013D067 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B29A30F725ADC76D0013D067 /* Reddler */;
+			targetProxy = B29A311225ADC7700013D067 /* PBXContainerItemProxy */;
+		};
+		B29A311E25ADC7700013D067 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B29A30F725ADC76D0013D067 /* Reddler */;
+			targetProxy = B29A311D25ADC7700013D067 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		B29A310125ADC76D0013D067 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B29A310225ADC76D0013D067 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		B29A310925ADC7700013D067 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B29A310A25ADC7700013D067 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		B29A312325ADC7700013D067 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		B29A312425ADC7700013D067 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B29A312625ADC7700013D067 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Reddler/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = me.theimless.reddler.Reddler;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B29A312725ADC7700013D067 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Reddler/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = me.theimless.reddler.Reddler;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		B29A312925ADC7700013D067 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = ReddlerTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = me.theimless.reddler.ReddlerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Reddler.app/Reddler";
+			};
+			name = Debug;
+		};
+		B29A312A25ADC7700013D067 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = ReddlerTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = me.theimless.reddler.ReddlerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Reddler.app/Reddler";
+			};
+			name = Release;
+		};
+		B29A312C25ADC7700013D067 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = ReddlerUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = me.theimless.reddler.ReddlerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Reddler;
+			};
+			name = Debug;
+		};
+		B29A312D25ADC7700013D067 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = ReddlerUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = me.theimless.reddler.ReddlerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Reddler;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B29A30F325ADC76C0013D067 /* Build configuration list for PBXProject "Reddler" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B29A312325ADC7700013D067 /* Debug */,
+				B29A312425ADC7700013D067 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B29A312525ADC7700013D067 /* Build configuration list for PBXNativeTarget "Reddler" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B29A312625ADC7700013D067 /* Debug */,
+				B29A312725ADC7700013D067 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B29A312825ADC7700013D067 /* Build configuration list for PBXNativeTarget "ReddlerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B29A312925ADC7700013D067 /* Debug */,
+				B29A312A25ADC7700013D067 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B29A312B25ADC7700013D067 /* Build configuration list for PBXNativeTarget "ReddlerUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B29A312C25ADC7700013D067 /* Debug */,
+				B29A312D25ADC7700013D067 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		B29A310425ADC76D0013D067 /* Reddler.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				B29A310525ADC76D0013D067 /* Reddler.xcdatamodel */,
+			);
+			currentVersion = B29A310525ADC76D0013D067 /* Reddler.xcdatamodel */;
+			path = Reddler.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = B29A30F025ADC76C0013D067 /* Project object */;
+}
