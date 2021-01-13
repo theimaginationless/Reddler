@@ -10,6 +10,8 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    var state: String?
+    var code: String?
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -45,11 +47,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
-
-        // Save changes in the application's managed object context when the application transitions to the background.
-        (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
     }
-
-
+    
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        let urlContext = URLContexts.first!
+        let components = URLComponents(url: urlContext.url, resolvingAgainstBaseURL: false)
+        if let queryItems = components?.queryItems {
+            let queryDictItems = Dictionary(uniqueKeysWithValues: queryItems.lazy.compactMap{($0.name, $0.value ?? "")})
+            self.state = queryDictItems["state"]
+            self.code = queryDictItems["code"]
+            NotificationCenter.default.post(name: Notification.Name(NotificationNames.AuthorizationRedirect.rawValue), object: queryDictItems)
+        }
+    }
 }
 
