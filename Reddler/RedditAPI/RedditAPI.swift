@@ -130,7 +130,6 @@ struct RedditAPI {
                 let jsonDict = json as! [String:AnyObject]
                 if let bodyError = self.checkBodyError(dict: jsonDict) {
                     let errorMsg = "Authentication error! Unexpected response body: \(bodyError)"
-                    print("\(#function): \(errorMsg)")
                     completion(.AuthenticationError(errorMsg))
                     return
                 }
@@ -141,7 +140,6 @@ struct RedditAPI {
                 print("Done!")
             case 400...499:
                 let errorMsg = "Client error: \(httpResponse.statusCode)"
-                print("\(#function): \(errorMsg)")
                 completion(.ClientError(errorMsg))
             case 500...511:
                 let errorMsg = "Server error: \(httpResponse.statusCode)"
@@ -149,7 +147,6 @@ struct RedditAPI {
                 completion(.ServerError(errorMsg))
             default:
                 let errorMsg = "Unknown error: \(httpResponse.statusCode)"
-                print("\(#function): \(errorMsg)")
                 completion(.UnknownError(errorMsg))
             }
         }
