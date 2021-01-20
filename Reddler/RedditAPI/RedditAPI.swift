@@ -36,6 +36,10 @@ enum RedditApiScope: String {
 
 enum RedditApiResult {
     case AuthenticationSuccess(String)
+    case ClientError(String)
+    case AuthenticationError(String)
+    case ServerError(String)
+    case UnknownError(String)
 }
 
 struct RedditAPI {
@@ -87,7 +91,7 @@ struct RedditAPI {
         return components.url
     }
     
-    static func authrization(clientId: String, code: String, completion: @escaping (RedditApiResult) -> Void?) {
+    static func authenticationProcess(clientId: String, code: String, completion: @escaping (RedditApiResult) -> Void) {
         var request = URLRequest(url: self.redditUrlFor(endpoint: .access_token)!)
         let authenticationString = "\(clientId):"
         guard let dataString = authenticationString.data(using: .utf8) else {
@@ -99,7 +103,16 @@ struct RedditAPI {
         let basicAuthenticationString = "Basic \(base64AuthenticationString)"
         request.addValue(basicAuthenticationString, forHTTPHeaderField: "Authorization")
         request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        let bodyString = "grant_type=authorization_code&code=\(code)&redirect_uri=\(self.oauthRedirectURL)"
+        var bodyContent = URLComponents(string: "")!
+        var queryItems = [URLQueryItem]()
+        queryItems.append(URLQueryItem(name: "grant_type", value: "authorization_code"))
+        queryItems.append(URLQueryItem(name: "code", value: code))
+        queryItems.append(URLQueryItem(name: "redirect_urid", value: self.oauthRedirectURL))
+        bodyContent.queryItems = queryItems
+        var bodyString = bodyContent.string!
+        
+        // Remove leading "?" symbol from string
+        bodyString.remove(at: bodyString.startIndex)
         guard let bodyData = bodyString.data(using: .utf8) else {
             return
         }
@@ -115,15 +128,40 @@ struct RedditAPI {
             case 200...299:
                 let json = try! JSONSerialization.jsonObject(with: data!, options: [])
                 let jsonDict = json as! [String:AnyObject]
+                if let bodyError = self.checkBodyError(dict: jsonDict) {
+                    let errorMsg = "Authentication error! Unexpected response body: \(bodyError)"
+                    print("\(#function): \(errorMsg)")
+                    completion(.AuthenticationError(errorMsg))
+                    return
+                }
+                
                 let token = jsonDict["access_token"] as? String ?? ""
                 print("All data from response: \(jsonDict.description)")
                 completion(.AuthenticationSuccess(token))
                 print("Done!")
+            case 400...499:
+                let errorMsg = "Client error: \(httpResponse.statusCode)"
+                print("\(#function): \(errorMsg)")
+                completion(.ClientError(errorMsg))
+            case 500...511:
+                let errorMsg = "Server error: \(httpResponse.statusCode)"
+                print("\(#function): \(errorMsg)")
+                completion(.ServerError(errorMsg))
             default:
-                print("Nothing: \(httpResponse.statusCode)")
+                let errorMsg = "Unknown error: \(httpResponse.statusCode)"
+                print("\(#function): \(errorMsg)")
+                completion(.UnknownError(errorMsg))
             }
         }
         
         task.resume()
+    }
+    
+    private static func checkBodyError(dict: [String:AnyObject]) -> String? {
+        guard let error = dict["error"] as? String else {
+            return nil
+        }
+        
+        return error
     }
 }
