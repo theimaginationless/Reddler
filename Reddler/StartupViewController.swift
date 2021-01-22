@@ -54,8 +54,15 @@ class StartupViewController: UIViewController {
             
             OperationQueue.main.addOperation {
                 switch result {
-                case let .AuthenticationSuccess(token):
-                    print("Success! \(token)")
+                case let .AuthenticationSuccess(session):
+                    session.account = RedditConfig.account
+                    do {
+                        try KeychainUtils.saveCredential(for: session)
+                    }
+                    catch let error {
+                        print("\(#function): \(error)")
+                    }
+                    
                     let mainSB = UIStoryboard(name: "Main", bundle: nil)
                     guard
                         let postTableNC = mainSB.instantiateInitialViewController() as? UINavigationController

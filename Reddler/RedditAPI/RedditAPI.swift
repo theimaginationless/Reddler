@@ -35,11 +35,12 @@ enum RedditApiScope: String {
 }
 
 enum RedditApiResult {
-    case AuthenticationSuccess(String)
+    case AuthenticationSuccess(Session)
     case ClientError(String)
     case AuthenticationError(String)
     case ServerError(String)
     case UnknownError(String)
+    case UnexpectedError(String)
 }
 
 struct RedditAPI {
@@ -99,7 +100,6 @@ struct RedditAPI {
         }
         
         let base64AuthenticationString = (dataString.base64EncodedString())
-        print(base64AuthenticationString)
         let basicAuthenticationString = "Basic \(base64AuthenticationString)"
         request.addValue(basicAuthenticationString, forHTTPHeaderField: "Authorization")
         request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
@@ -107,7 +107,7 @@ struct RedditAPI {
         var queryItems = [URLQueryItem]()
         queryItems.append(URLQueryItem(name: "grant_type", value: "authorization_code"))
         queryItems.append(URLQueryItem(name: "code", value: code))
-        queryItems.append(URLQueryItem(name: "redirect_urid", value: self.oauthRedirectURL))
+        queryItems.append(URLQueryItem(name: "redirect_uri", value: self.oauthRedirectURL))
         bodyContent.queryItems = queryItems
         var bodyString = bodyContent.string!
         
@@ -126,17 +126,24 @@ struct RedditAPI {
             let httpResponse = response as! HTTPURLResponse
             switch httpResponse.statusCode {
             case 200...299:
-                let json = try! JSONSerialization.jsonObject(with: data!, options: [])
-                let jsonDict = json as! [String:AnyObject]
-                if let bodyError = self.checkBodyError(dict: jsonDict) {
-                    let errorMsg = "Authentication error! Unexpected response body: \(bodyError)"
-                    completion(.AuthenticationError(errorMsg))
+                guard let jsonDict = self.jsonDataEncoder(jsonData: data) else {
+                    completion(.UnexpectedError("Bad response."))
                     return
                 }
                 
-                let token = jsonDict["access_token"] as? String ?? ""
+                if let bodyError = self.checkBodyError(dict: jsonDict) {
+                    let errorMsg = "Unexpected response body: \(bodyError)"
+                    completion(.UnexpectedError(errorMsg))
+                    return
+                }
+                
                 print("All data from response: \(jsonDict.description)")
-                completion(.AuthenticationSuccess(token))
+                guard let session = self.sessionJSONEncoder(jsonDict: jsonDict) else {
+                    completion(.AuthenticationError("Empty response data."))
+                    return
+                }
+                
+                completion(.AuthenticationSuccess(session))
                 print("Done!")
             case 400...499:
                 let errorMsg = "Client error: \(httpResponse.statusCode)"
@@ -152,6 +159,37 @@ struct RedditAPI {
         }
         
         task.resume()
+    }
+    
+    private static func jsonDataEncoder(jsonData: Data?) -> [String:AnyObject]? {
+        guard let data = jsonData else {
+            print("JSON Data is empty!")
+            return nil
+        }
+        
+        guard let jsonDict = try? JSONSerialization.jsonObject(with: data, options: []) as? [String:AnyObject]
+        else {
+            print("Invalid JSON Data")
+            return nil
+        }
+        
+        return jsonDict
+    }
+    
+    private static func sessionJSONEncoder(jsonDict: [String:AnyObject]?) -> Session? {
+        guard let json = jsonDict,
+              let accessToken = json["access_token"] as? String,
+              let refreshToken = json["refresh_token"] as? String
+        else {
+            print("\(#function): parse session failed!")
+            return nil
+        }
+        
+        let session = Session()
+        session.accessToken = accessToken
+        session.refreshToken = refreshToken
+        
+        return session
     }
     
     private static func checkBodyError(dict: [String:AnyObject]) -> String? {
