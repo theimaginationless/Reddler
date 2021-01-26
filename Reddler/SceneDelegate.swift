@@ -19,6 +19,31 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
+//        if let session = try? KeychainUtils.loadCredentials(for: RedditConfig.account) {
+//            try! KeychainUtils.removeCredentials(for: session)
+//        }
+        
+        if let session = try? KeychainUtils.loadCredentials(for: RedditConfig.account) {
+            let mainSB = UIStoryboard(name: "Main", bundle: nil)
+            guard let mainNC = mainSB.instantiateInitialViewController(),
+                  let postTableVC = mainNC.children.first as? PostTableViewController
+            else {
+                print("Cannot create PostTableViewController.")
+                return
+            }
+            
+            postTableVC.session = session
+            self.window!.rootViewController = mainNC
+        }
+        else {
+            let startupSB = UIStoryboard(name: "Startup", bundle: nil)
+            guard let startupVC = startupSB.instantiateInitialViewController() as? StartupViewController else {
+                print("Cannot create StartupViewController.")
+                return
+            }
+            
+            self.window!.rootViewController = startupVC
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

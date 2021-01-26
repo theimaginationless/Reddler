@@ -8,10 +8,11 @@
 import UIKit
 import SafariServices
 
-class PostTableViewController: UITableViewController {    
+class PostTableViewController: UITableViewController {
+    var session: Session!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {

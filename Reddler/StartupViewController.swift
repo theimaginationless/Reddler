@@ -11,6 +11,8 @@ import SafariServices
 class StartupViewController: UIViewController {
     var safariViewController: SFSafariViewController?
     var originVerificationState: String!
+    var session: Session?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -55,9 +57,9 @@ class StartupViewController: UIViewController {
             OperationQueue.main.addOperation {
                 switch result {
                 case let .AuthenticationSuccess(session):
-                    session.account = RedditConfig.account
+                    self.session = session
                     do {
-                        try KeychainUtils.saveCredential(for: session)
+                        try KeychainUtils.saveCredentials(for: session)
                     }
                     catch let error {
                         print("\(#function): \(error)")
@@ -65,15 +67,17 @@ class StartupViewController: UIViewController {
                     
                     let mainSB = UIStoryboard(name: "Main", bundle: nil)
                     guard
-                        let postTableNC = mainSB.instantiateInitialViewController() as? UINavigationController
+                        let mainNC = mainSB.instantiateInitialViewController(),
+                        let postTableVC = mainNC.children.first as? PostTableViewController
                     else {
                         print("\(#function): Instantiate PostTable NC/VC failed!")
                         return
                     }
                     
                     self.dismiss(animated: false) {
-                        postTableNC.modalPresentationStyle = .fullScreen
-                        self.present(postTableNC, animated: true)
+                        postTableVC.session = self.session
+                        mainNC.modalPresentationStyle = .fullScreen
+                        self.present(mainNC, animated: true)
                     }
                     
                 default:

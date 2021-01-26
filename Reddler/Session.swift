@@ -7,13 +7,17 @@
 
 import Foundation
 
-struct Session {
-    static var code: String? {
+class Session {
+    var accessToken: String
+    var refreshToken: String
+    var account: String {
         get {
-            UserDefaults.standard.string(forKey: "code")
+            RedditConfig.account
         }
-        set {
-            UserDefaults.standard.setValue(newValue, forKey: "code")
-        }
+    }
+    
+    required init(accessToken: String, refreshToken: String) {
+        self.accessToken = accessToken
+        self.refreshToken = refreshToken
     }
 }

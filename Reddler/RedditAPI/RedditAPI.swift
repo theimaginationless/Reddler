@@ -36,11 +36,17 @@ enum RedditApiScope: String {
 
 enum RedditApiResult {
     case AuthenticationSuccess(Session)
+    case RefreshTokenSuccess(String)
     case ClientError(String)
     case AuthenticationError(String)
     case ServerError(String)
     case UnknownError(String)
     case UnexpectedError(String)
+}
+
+enum AuthenticationOpType {
+    case authentication
+    case refreshToken
 }
 
 struct RedditAPI {
@@ -92,23 +98,31 @@ struct RedditAPI {
         return components.url
     }
     
-    static func authenticationProcess(clientId: String, code: String, completion: @escaping (RedditApiResult) -> Void) {
-        var request = URLRequest(url: self.redditUrlFor(endpoint: .access_token)!)
-        let authenticationString = "\(clientId):"
+    /// Refresh access token with refresh token
+    /// - Parameter with: active session
+    /// - Parameter completion: completion with access to refreshed access token
+    static func refreshAccessToken(with session: Session, completion: @escaping (RedditApiResult) -> Void) {
+        let authenticationString = "\(RedditConfig.clientId):"
         guard let dataString = authenticationString.data(using: .utf8) else {
             return
         }
         
         let base64AuthenticationString = (dataString.base64EncodedString())
         let basicAuthenticationString = "Basic \(base64AuthenticationString)"
-        request.addValue(basicAuthenticationString, forHTTPHeaderField: "Authorization")
-        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        var bodyContent = URLComponents(string: "")!
+        var headerParams = [String: String]()
+        headerParams["Authorization"] = basicAuthenticationString
+        headerParams["Content-Type"] = "application/x-www-form-urlencoded"
         var queryItems = [URLQueryItem]()
-        queryItems.append(URLQueryItem(name: "grant_type", value: "authorization_code"))
-        queryItems.append(URLQueryItem(name: "code", value: code))
-        queryItems.append(URLQueryItem(name: "redirect_uri", value: self.oauthRedirectURL))
-        bodyContent.queryItems = queryItems
+        queryItems.append(URLQueryItem(name: "grant_type", value: "refresh_token"))
+        queryItems.append(URLQueryItem(name: "refresh_token", value: session.refreshToken))
+        self.commonAuthenticationProcess(operationType: .refreshToken, bodyParams: queryItems, headerParams: headerParams, completion: completion)
+    }
+    
+    private static func commonAuthenticationProcess(operationType: AuthenticationOpType, bodyParams: [URLQueryItem], headerParams: [String: String], completion: @escaping (RedditApiResult) -> Void) {
+        var request = URLRequest(url: self.redditUrlFor(endpoint: .access_token)!)
+        headerParams.forEach{request.addValue($0.value, forHTTPHeaderField: $0.key)}
+        var bodyContent = URLComponents(string: "")!
+        bodyContent.queryItems = bodyParams
         var bodyString = bodyContent.string!
         
         // Remove leading "?" symbol from string
@@ -138,12 +152,23 @@ struct RedditAPI {
                 }
                 
                 print("All data from response: \(jsonDict.description)")
-                guard let session = self.sessionJSONEncoder(jsonDict: jsonDict) else {
-                    completion(.AuthenticationError("Empty response data."))
-                    return
+                switch operationType {
+                case .authentication:
+                    guard let session = self.sessionJSONEncoder(jsonDict: jsonDict) else {
+                        completion(.AuthenticationError("Empty response data."))
+                        return
+                    }
+                    
+                    completion(.AuthenticationSuccess(session))
+                case .refreshToken:
+                    guard let refreshedAccessToken = jsonDict["access_token"] as? String else {
+                        completion(.AuthenticationError("Empty respinse data."))
+                        return
+                    }
+                    
+                    completion(.RefreshTokenSuccess(refreshedAccessToken))
                 }
                 
-                completion(.AuthenticationSuccess(session))
                 print("Done!")
             case 400...499:
                 let errorMsg = "Client error: \(httpResponse.statusCode)"
@@ -159,6 +184,24 @@ struct RedditAPI {
         }
         
         task.resume()
+    }
+    
+    static func authenticationProcess(clientId: String, code: String, completion: @escaping (RedditApiResult) -> Void) {
+        var headerParams = [String: String]()
+        let authenticationString = "\(clientId):"
+        guard let dataString = authenticationString.data(using: .utf8) else {
+            return
+        }
+        
+        let base64AuthenticationString = (dataString.base64EncodedString())
+        let basicAuthenticationString = "Basic \(base64AuthenticationString)"
+        headerParams["Authorization"] = basicAuthenticationString
+        headerParams["Content-Type"] = "application/x-www-form-urlencoded"
+        var queryItems = [URLQueryItem]()
+        queryItems.append(URLQueryItem(name: "grant_type", value: "authorization_code"))
+        queryItems.append(URLQueryItem(name: "code", value: code))
+        queryItems.append(URLQueryItem(name: "redirect_uri", value: self.oauthRedirectURL))
+        self.commonAuthenticationProcess(operationType: .authentication, bodyParams: queryItems, headerParams: headerParams, completion: completion)
     }
     
     private static func jsonDataEncoder(jsonData: Data?) -> [String:AnyObject]? {
@@ -185,9 +228,8 @@ struct RedditAPI {
             return nil
         }
         
-        let session = Session()
-        session.accessToken = accessToken
-        session.refreshToken = refreshToken
+        let session = Session(accessToken: accessToken, refreshToken: refreshToken
+        )
         
         return session
     }
