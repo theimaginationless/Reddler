@@ -119,22 +119,8 @@ struct RedditAPI {
     }
     
     private static func commonAuthenticationProcess(operationType: AuthenticationOpType, bodyParams: [URLQueryItem], headerParams: [String: String], completion: @escaping (RedditApiResult) -> Void) {
-        var request = URLRequest(url: self.redditUrlFor(endpoint: .access_token)!)
-        headerParams.forEach{request.addValue($0.value, forHTTPHeaderField: $0.key)}
-        var bodyContent = URLComponents(string: "")!
-        bodyContent.queryItems = bodyParams
-        var bodyString = bodyContent.string!
-        
-        // Remove leading "?" symbol from string
-        bodyString.remove(at: bodyString.startIndex)
-        guard let bodyData = bodyString.data(using: .utf8) else {
-            return
-        }
-        
-        request.httpBody = bodyData
-        request.httpMethod = RequestType.POST.rawValue
-        
-        let task = self.session.dataTask(with: request) {
+        let url = self.redditUrlFor(endpoint: .access_token)!
+        self.commonRequestProcessing(requestType: .POST, url: url, bodyParams: bodyParams, urlParams: [], headerParams: headerParams) {
             (data, response, error) in
             
             let httpResponse = response as! HTTPURLResponse
@@ -182,8 +168,6 @@ struct RedditAPI {
                 completion(.UnknownError(errorMsg))
             }
         }
-        
-        task.resume()
     }
     
     static func authenticationProcess(clientId: String, code: String, completion: @escaping (RedditApiResult) -> Void) {
@@ -202,6 +186,31 @@ struct RedditAPI {
         queryItems.append(URLQueryItem(name: "code", value: code))
         queryItems.append(URLQueryItem(name: "redirect_uri", value: self.oauthRedirectURL))
         self.commonAuthenticationProcess(operationType: .authentication, bodyParams: queryItems, headerParams: headerParams, completion: completion)
+    }
+    
+    private static func commonRequestProcessing(requestType: RequestType, url: URL, bodyParams: [URLQueryItem], urlParams: [URLQueryItem], headerParams: [String: String], dataTask: @escaping (Data?, URLResponse?, Error?) -> Void) {
+        var request = URLRequest(url: url)
+        headerParams.forEach{request.addValue($0.value, forHTTPHeaderField: $0.key)}
+        var bodyContent = URLComponents(string: "")!
+        bodyContent.queryItems = bodyParams
+        var bodyString = bodyContent.string!
+        
+        // Remove leading "?" symbol from string
+        bodyString.remove(at: bodyString.startIndex)
+        guard let bodyData = bodyString.data(using: .utf8) else {
+            return
+        }
+        
+        request.httpBody = bodyData
+        request.httpMethod = requestType.rawValue
+        
+        let task = self.session.dataTask(with: request) {
+            (data, response, error) in
+            
+            dataTask(data, response, error)
+        }
+        
+        task.resume()
     }
     
     private static func jsonDataEncoder(jsonData: Data?) -> [String:AnyObject]? {
