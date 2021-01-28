@@ -148,7 +148,7 @@ struct RedditAPI {
                     completion(.AuthenticationSuccess(session))
                 case .refreshToken:
                     guard let refreshedAccessToken = jsonDict["access_token"] as? String else {
-                        completion(.AuthenticationError("Empty respinse data."))
+                        completion(.AuthenticationError("Empty response data."))
                         return
                     }
                     

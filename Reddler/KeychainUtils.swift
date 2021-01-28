@@ -20,26 +20,27 @@ struct KeychainUtils {
     static let refreshTokenField = "refreshToken"
     
     public static func saveCredentials(for session: Session) throws {
-        let account = session.account
-        let accessToken = session.accessToken
-        let refreshToken = session.refreshToken
-        let credentialsDict: [String: String] = [self.accessTokenField: accessToken,
-                                                 self.refreshTokenField: refreshToken]
-        
-        guard let credentialsData = try? JSONSerialization.data(withJSONObject: credentialsDict, options: []) else {
-            print("Error while encoding credentials to data")
-            throw KeychainError.preparingCredentialsError
-        }
-        
-        let query: [String: Any] = [kSecClass as String: kSecClassInternetPassword,
-                                    kSecAttrAccount as String: account,
-                                    kSecValueData as String: credentialsData]
-        
+        let query = self.prepareQuery(for: session)
         let error = SecItemAdd(query as CFDictionary, nil)
         
         guard error == errSecSuccess else {
             print("Cannot add security item with error: \(error)")
             throw KeychainError.unhandledError(status: error)
+        }
+    }
+    
+    public static func updateCredentials(for session: Session) throws {
+        let query = self.prepareQuery(for: session)
+        let newValue = query[kSecValueData as String] as! Data
+        let attributes: [String: Any] = [kSecValueData as String: newValue]
+        let status = SecItemUpdate(query as CFDictionary, attributes as CFDictionary)
+        
+        guard status != errSecItemNotFound else {
+            throw KeychainError.credentialsNotFound
+        }
+        
+        guard status == errSecSuccess else {
+            throw KeychainError.unhandledError(status: status)
         }
     }
     
@@ -80,6 +81,20 @@ struct KeychainUtils {
         let session = Session(accessToken: accessToken, refreshToken: refreshToken)
         
         return session
+    }
+    
+    private static func prepareQuery(for session: Session) -> [String: Any] {
+        let account = session.account
+        let accessToken = session.accessToken
+        let refreshToken = session.refreshToken
+        let credentialsDict: [String: String] = [self.accessTokenField: accessToken,
+                                                 self.refreshTokenField: refreshToken]
+        let credentialsData = try! JSONSerialization.data(withJSONObject: credentialsDict, options: [])
+        let query: [String: Any] = [kSecClass as String: kSecClassInternetPassword,
+                                    kSecAttrAccount as String: account,
+                                    kSecValueData as String: credentialsData]
+        
+        return query
     }
     
     public static func removeCredentials(for session: Session) throws {

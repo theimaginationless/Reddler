@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import SafariServices
 
 class PostTableViewController: UITableViewController {
     var session: Session!

@@ -42,7 +42,12 @@ class StartupViewController: UIViewController {
               let code = dataDict["code"] as? String,
               let verificationString = dataDict["state"] as? String
         else {
-            print("\(#function): Cannot extract verification payload from notification")
+            print("\(#function): Cannot extract verification payload from notification.\nOAuth request was declined?")
+            NotificationCenter.default.removeObserver(self, name: Notification.Name(NotificationNames.AuthorizationRedirect.rawValue), object: nil)
+            let alertController = UIAlertController(title: "Failed!", message: "Sign in failed!\nTry again!", preferredStyle: .alert)
+            let closeAlertAction = UIAlertAction(title: "Ok", style: .cancel)
+            alertController.addAction(closeAlertAction)
+            self.present(alertController, animated: true)
             return
         }
         
