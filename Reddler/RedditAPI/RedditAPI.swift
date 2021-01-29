@@ -16,12 +16,16 @@ enum RedditEndpoint: String {
     case new = "/new"
 }
 
+enum ResponseType: String {
+    case json = ".json"
+}
+
 enum RedditAuthEndpoint: String {
     case access_token = "/api/v1/access_token"
     case authorize = "/api/v1/authorize"
 }
 
-enum ResponseType: String {
+enum AuthResponseType: String {
     case code = "code"
 }
 
@@ -35,6 +39,8 @@ enum RedditApiScope: String {
 }
 
 enum RedditApiResult {
+    case PostFetchSuccess([RedditPost])
+    case FetchFailed(String)
     case AuthenticationSuccess(Session)
     case RefreshTokenSuccess(String)
     case ClientError(String)
@@ -50,8 +56,9 @@ enum AuthenticationOpType {
 }
 
 struct RedditAPI {
-    private static let baseURL = "https://oauth.reddit.com"
+    private static let baseOAuthURL = "https://oauth.reddit.com"
     private static let baseAuthURL = "https://www.reddit.com"
+    private static let baseURL = "https://www.reddit.com"
     private static let oauthRedirectURL = "reddler://redirect"
     
     private static let session: URLSession = {
@@ -62,10 +69,17 @@ struct RedditAPI {
     /// Generate URL for passed endpoint
     /// - Parameter endpoint: reddit endpoint
     /// - Returns: endpoint URL Instance
-    private static func redditUrlFor(endpoint: RedditEndpoint) -> URL? {
-        guard let components = URLComponents(string: self.baseURL + endpoint.rawValue) else {
-            return nil
+    private static func redditUrlFor(subreddit: String? = nil, endpoint: RedditEndpoint, urlParams: [String: String]) -> URL? {
+        var url = URL(string: self.baseURL)!
+        if let subredditString = subreddit {
+            url.appendPathComponent("r/\(subredditString)")
         }
+        
+        url.appendPathComponent(endpoint.rawValue)
+        url.appendPathComponent(ResponseType.json.rawValue)
+        var components = URLComponents(url: url, resolvingAgainstBaseURL: true)!
+        let queryItems = urlParams.map{param in URLQueryItem(name: param.key, value: param.value)}
+        components.queryItems = queryItems
         
         print("Generated url: \(components.url?.description ?? "")")
         return components.url
@@ -83,7 +97,7 @@ struct RedditAPI {
         return components.url
     }
     
-    static func generateAuthorizeUrl(clientId: String, responseType: ResponseType, state: String, scope: [RedditApiScope]) -> URL? {
+    static func generateAuthorizeUrl(clientId: String, responseType: AuthResponseType, state: String, scope: [RedditApiScope]) -> URL? {
         let url = URL(string: self.baseAuthURL + RedditAuthEndpoint.authorize.rawValue)!
         var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
         let scopes = scope.map{"\($0.rawValue)"}.joined(separator: ",")
@@ -98,13 +112,53 @@ struct RedditAPI {
         return components.url
     }
     
-    /// Refresh access token with refresh token
-    /// - Parameter with: active session
-    /// - Parameter completion: completion with access to refreshed access token
-    static func refreshAccessToken(with session: Session, completion: @escaping (RedditApiResult) -> Void) {
-        let authenticationString = "\(RedditConfig.clientId):"
-        guard let dataString = authenticationString.data(using: .utf8) else {
+    
+    static func fetchPost(subreddit: String? = nil, after: String? = nil, limit: Int, category: RedditEndpoint, completion: @escaping (RedditApiResult) -> Void) {
+        var params = ["limit": "\(limit)"]
+        if let afterString = after {
+            params["after"] = afterString
+        }
+        
+        let url = self.redditUrlFor(subreddit: subreddit, endpoint: category, urlParams: params)!
+        
+        guard let headerParams = self.generateAuthorizationHeaderParams() else {
             return
+        }
+        
+        self.commonRequestProcessing(requestType: .GET, url: url, bodyParams: [], headerParams: headerParams) {
+            (data, response, error) in
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                completion(.UnexpectedError("Something wrong with network!"))
+                return
+            }
+            
+            switch httpResponse.statusCode {
+            case 200...299:
+                guard let jsonDict = self.jsonDataDecoder(jsonData: data) else {
+                    return
+                }
+                
+                guard let posts = self.parseJsonResponseToPosts(jsonDict: jsonDict) else {
+                    return
+                }
+                
+                print("Done! \(posts)")
+                
+                completion(.PostFetchSuccess(posts))
+            default:
+                let errMsg = "ErrCode: \(httpResponse.statusCode)"
+                print(errMsg)
+                completion(.FetchFailed(errMsg))
+            }
+        }
+    }
+    
+    private static func generateAuthorizationHeaderParams() -> [String: String]? {
+        let authenticationString = "\(RedditConfig.clientId):"
+        
+        guard let dataString = authenticationString.data(using: .utf8) else {
+            return nil
         }
         
         let base64AuthenticationString = (dataString.base64EncodedString())
@@ -112,6 +166,18 @@ struct RedditAPI {
         var headerParams = [String: String]()
         headerParams["Authorization"] = basicAuthenticationString
         headerParams["Content-Type"] = "application/x-www-form-urlencoded"
+        
+        return headerParams
+    }
+    
+    /// Refresh access token with refresh token
+    /// - Parameter with: active session
+    /// - Parameter completion: completion with access to refreshed access token
+    static func refreshAccessToken(with session: Session, completion: @escaping (RedditApiResult) -> Void) {
+        guard let headerParams = self.generateAuthorizationHeaderParams() else {
+            return
+        }
+        
         var queryItems = [URLQueryItem]()
         queryItems.append(URLQueryItem(name: "grant_type", value: "refresh_token"))
         queryItems.append(URLQueryItem(name: "refresh_token", value: session.refreshToken))
@@ -120,13 +186,13 @@ struct RedditAPI {
     
     private static func commonAuthenticationProcess(operationType: AuthenticationOpType, bodyParams: [URLQueryItem], headerParams: [String: String], completion: @escaping (RedditApiResult) -> Void) {
         let url = self.redditUrlFor(endpoint: .access_token)!
-        self.commonRequestProcessing(requestType: .POST, url: url, bodyParams: bodyParams, urlParams: [], headerParams: headerParams) {
+        self.commonRequestProcessing(requestType: .POST, url: url, bodyParams: bodyParams, headerParams: headerParams) {
             (data, response, error) in
             
             let httpResponse = response as! HTTPURLResponse
             switch httpResponse.statusCode {
             case 200...299:
-                guard let jsonDict = self.jsonDataEncoder(jsonData: data) else {
+                guard let jsonDict = self.jsonDataDecoder(jsonData: data) else {
                     completion(.UnexpectedError("Bad response."))
                     return
                 }
@@ -140,7 +206,7 @@ struct RedditAPI {
                 print("All data from response: \(jsonDict.description)")
                 switch operationType {
                 case .authentication:
-                    guard let session = self.sessionJSONEncoder(jsonDict: jsonDict) else {
+                    guard let session = self.jsonToSession(jsonDict: jsonDict) else {
                         completion(.AuthenticationError("Empty response data."))
                         return
                     }
@@ -188,7 +254,7 @@ struct RedditAPI {
         self.commonAuthenticationProcess(operationType: .authentication, bodyParams: queryItems, headerParams: headerParams, completion: completion)
     }
     
-    private static func commonRequestProcessing(requestType: RequestType, url: URL, bodyParams: [URLQueryItem], urlParams: [URLQueryItem], headerParams: [String: String], dataTask: @escaping (Data?, URLResponse?, Error?) -> Void) {
+    private static func commonRequestProcessing(requestType: RequestType, url: URL, bodyParams: [URLQueryItem], headerParams: [String: String], dataTask: @escaping (Data?, URLResponse?, Error?) -> Void) {
         var request = URLRequest(url: url)
         headerParams.forEach{request.addValue($0.value, forHTTPHeaderField: $0.key)}
         var bodyContent = URLComponents(string: "")!
@@ -213,7 +279,7 @@ struct RedditAPI {
         task.resume()
     }
     
-    private static func jsonDataEncoder(jsonData: Data?) -> [String:AnyObject]? {
+    private static func jsonDataDecoder(jsonData: Data?) -> [String:AnyObject]? {
         guard let data = jsonData else {
             print("JSON Data is empty!")
             return nil
@@ -221,14 +287,66 @@ struct RedditAPI {
         
         guard let jsonDict = try? JSONSerialization.jsonObject(with: data, options: []) as? [String:AnyObject]
         else {
-            print("Invalid JSON Data")
+            print("\(#function): parse JSON failed!")
             return nil
         }
         
         return jsonDict
     }
     
-    private static func sessionJSONEncoder(jsonDict: [String:AnyObject]?) -> Session? {
+    private static func parseJsonResponseToPosts(jsonDict: [String:AnyObject]?) -> [RedditPost]? {
+        guard let json = jsonDict,
+              let dataContent = json["data"] as? [String:AnyObject],
+              let childrenContent = dataContent["children"] as? [[String:AnyObject]]
+        else {
+            print("\(#function): parse session failed!")
+            return nil
+        }
+        
+        let posts = childrenContent.compactMap{self.jsonToPost(jsonDict: $0)}
+        
+        return posts
+    }
+    
+    private static func jsonToPost(jsonDict: [String:AnyObject]?) -> RedditPost? {
+        print("Is: \(jsonDict!)")
+        guard let jsonPost = jsonDict,
+              let jsonPostData = jsonPost["data"] as? [String:AnyObject],
+              let subreddit = jsonPostData["subreddit"] as? String,
+              let selftext = jsonPostData["selftext"] as? String,
+              let title = jsonPostData["title"] as? String,
+              let createdTS = jsonPostData["created"] as? Double,
+              let id = jsonPostData["id"] as? String,
+              let score = jsonPostData["score"] as? Int,
+              let permalink = jsonPostData["permalink"] as? String,
+              let numComments = jsonPostData["num_comments"] as? Int,
+              let author = jsonPostData["author"] as? String
+        else {
+            print("\(#function): parse post JSON failed!")
+            return nil
+        }
+        
+        let createdTI = TimeInterval(createdTS)
+        let created = Date(timeIntervalSince1970: createdTI)
+        let likes = (jsonPostData["likes"] as? Bool) ?? false
+        let saved = (jsonPostData["saved"] as? Bool) ?? false
+        let post = RedditPost()
+        post.author = author
+        post.created = created
+        post.id = id
+        post.likes = likes
+        post.permalink = permalink
+        post.numComments = numComments
+        post.score = score
+        post.saved = saved
+        post.selftext = selftext
+        post.subreddit = subreddit
+        post.title = title
+        
+        return post
+    }
+    
+    private static func jsonToSession(jsonDict: [String:AnyObject]?) -> Session? {
         guard let json = jsonDict,
               let accessToken = json["access_token"] as? String,
               let refreshToken = json["refresh_token"] as? String

@@ -28,6 +28,8 @@
 		B29A316E25AEB0090013D067 /* RedditAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29A316D25AEB0090013D067 /* RedditAPI.swift */; };
 		B29A317625AF07550013D067 /* NotificationNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29A317525AF07540013D067 /* NotificationNames.swift */; };
 		B2EF473825C23C7F009CCD1D /* RoundedCornerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EF473725C23C7F009CCD1D /* RoundedCornerButton.swift */; };
+		B2EF473D25C33A8B009CCD1D /* PostTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EF473C25C33A8B009CCD1D /* PostTableViewDataSource.swift */; };
+		B2EF474225C33B68009CCD1D /* PostStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EF474125C33B68009CCD1D /* PostStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +77,8 @@
 		B29A316D25AEB0090013D067 /* RedditAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedditAPI.swift; sourceTree = "<group>"; };
 		B29A317525AF07540013D067 /* NotificationNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationNames.swift; sourceTree = "<group>"; };
 		B2EF473725C23C7F009CCD1D /* RoundedCornerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCornerButton.swift; sourceTree = "<group>"; };
+		B2EF473C25C33A8B009CCD1D /* PostTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostTableViewDataSource.swift; sourceTree = "<group>"; };
+		B2EF474125C33B68009CCD1D /* PostStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,6 +148,8 @@
 				B23D5F2025B88757006238F8 /* Session.swift */,
 				B23D5F3A25B8D5A3006238F8 /* KeychainUtils.swift */,
 				B2EF473725C23C7F009CCD1D /* RoundedCornerButton.swift */,
+				B2EF474125C33B68009CCD1D /* PostStore.swift */,
+				B2EF473C25C33A8B009CCD1D /* PostTableViewDataSource.swift */,
 			);
 			path = Reddler;
 			sourceTree = "<group>";
@@ -322,10 +328,12 @@
 				B29A315A25AEAD430013D067 /* ImageCollectionView.swift in Sources */,
 				B23D5F1725B87D8F006238F8 /* StartupViewController.swift in Sources */,
 				B29A315225AEAD100013D067 /* ImageCollectionViewCell.swift in Sources */,
+				B2EF474225C33B68009CCD1D /* PostStore.swift in Sources */,
 				B29A313B25AEABB70013D067 /* PostTableViewController.swift in Sources */,
 				B23D5F2125B88757006238F8 /* Session.swift in Sources */,
 				B29A316825AEADE80013D067 /* RedditPost.swift in Sources */,
 				B29A310625ADC76D0013D067 /* Reddler.xcdatamodeld in Sources */,
+				B2EF473D25C33A8B009CCD1D /* PostTableViewDataSource.swift in Sources */,
 				B29A317625AF07550013D067 /* NotificationNames.swift in Sources */,
 				B29A30FE25ADC76D0013D067 /* SceneDelegate.swift in Sources */,
 				B29A316E25AEB0090013D067 /* RedditAPI.swift in Sources */,
