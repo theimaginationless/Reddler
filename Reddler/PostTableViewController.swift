@@ -21,7 +21,7 @@ class PostTableViewController: UITableViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        RedditAPI.fetchPost(limit: 10, category: .hot) {
+        RedditAPI.fetchPosts(limit: 10, category: .hot, session: self.session) {
             (result) in
             
             DispatchQueue.main.async {

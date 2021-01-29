@@ -36,10 +36,13 @@ enum RequestType: String {
 
 enum RedditApiScope: String {
     case read = "read"
+    case account = "account"
+    case identity = "identity"
 }
 
 enum RedditApiResult {
     case PostFetchSuccess([RedditPost])
+    case UserFetchSuccess
     case FetchFailed(String)
     case AuthenticationSuccess(Session)
     case RefreshTokenSuccess(String)
@@ -70,7 +73,7 @@ struct RedditAPI {
     /// - Parameter endpoint: reddit endpoint
     /// - Returns: endpoint URL Instance
     private static func redditUrlFor(subreddit: String? = nil, endpoint: RedditEndpoint, urlParams: [String: String]) -> URL? {
-        var url = URL(string: self.baseURL)!
+        var url = URL(string: self.baseOAuthURL)!
         if let subredditString = subreddit {
             url.appendPathComponent("r/\(subredditString)")
         }
@@ -113,7 +116,7 @@ struct RedditAPI {
     }
     
     
-    static func fetchPost(subreddit: String? = nil, after: String? = nil, limit: Int, category: RedditEndpoint, completion: @escaping (RedditApiResult) -> Void) {
+    static func fetchPosts(subreddit: String? = nil, after: String? = nil, limit: Int, category: RedditEndpoint, session: Session, completion: @escaping (RedditApiResult) -> Void) {
         var params = ["limit": "\(limit)"]
         if let afterString = after {
             params["after"] = afterString
@@ -121,7 +124,7 @@ struct RedditAPI {
         
         let url = self.redditUrlFor(subreddit: subreddit, endpoint: category, urlParams: params)!
         
-        guard let headerParams = self.generateAuthorizationHeaderParams() else {
+        guard let headerParams = self.generateAuthorizationHeaderParams(with: session, withContent: false) else {
             return
         }
         
@@ -144,8 +147,19 @@ struct RedditAPI {
                 }
                 
                 print("Done! \(posts)")
-                
                 completion(.PostFetchSuccess(posts))
+            case 403:
+                self.refreshAccessToken(with: session) {
+                    (result) in
+                    
+                    switch result {
+                    case let .RefreshTokenSuccess(newAccessToken):
+                        session.accessToken = newAccessToken
+                        self.fetchPosts(subreddit: subreddit, after: after, limit: limit, category: category, session: session, completion: completion)
+                    default:
+                        completion(.AuthenticationError("Access denied! ErrNo: \(httpResponse.statusCode)"))
+                    }
+                }
             default:
                 let errMsg = "ErrCode: \(httpResponse.statusCode)"
                 print(errMsg)
@@ -154,18 +168,26 @@ struct RedditAPI {
         }
     }
     
-    private static func generateAuthorizationHeaderParams() -> [String: String]? {
-        let authenticationString = "\(RedditConfig.clientId):"
-        
-        guard let dataString = authenticationString.data(using: .utf8) else {
-            return nil
+    private static func generateAuthorizationHeaderParams(with session: Session? = nil, withContent: Bool) -> [String: String]? {
+        var basicAuthenticationString = ""
+        if let activeSession = session {
+            basicAuthenticationString = "bearer \(activeSession.accessToken)"
+        }
+        else {
+            let authenticationString = "\(RedditConfig.clientId):"
+            guard let dataString = authenticationString.data(using: .utf8) else {
+                return nil
+            }
+            
+            let base64AuthenticationString = (dataString.base64EncodedString())
+            basicAuthenticationString = "Basic \(base64AuthenticationString)"
         }
         
-        let base64AuthenticationString = (dataString.base64EncodedString())
-        let basicAuthenticationString = "Basic \(base64AuthenticationString)"
         var headerParams = [String: String]()
         headerParams["Authorization"] = basicAuthenticationString
-        headerParams["Content-Type"] = "application/x-www-form-urlencoded"
+        if withContent {
+            headerParams["Content-Type"] = "application/x-www-form-urlencoded"
+        }
         
         return headerParams
     }
@@ -174,7 +196,7 @@ struct RedditAPI {
     /// - Parameter with: active session
     /// - Parameter completion: completion with access to refreshed access token
     static func refreshAccessToken(with session: Session, completion: @escaping (RedditApiResult) -> Void) {
-        guard let headerParams = self.generateAuthorizationHeaderParams() else {
+        guard let headerParams = self.generateAuthorizationHeaderParams(withContent: true) else {
             return
         }
         

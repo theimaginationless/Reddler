@@ -24,7 +24,7 @@ class StartupViewController: UIViewController {
     @objc func authenticationProcess() {
         self.originVerificationState = UUID().uuidString
         guard
-            let url = RedditAPI.generateAuthorizeUrl(clientId: RedditConfig.clientId, responseType: .code, state: originVerificationState, scope: [.read])
+            let url = RedditAPI.generateAuthorizeUrl(clientId: RedditConfig.clientId, responseType: .code, state: originVerificationState, scope: [.read, .identity])
         else {
             print("\(#function): OAuth url generation failed!")
             return
