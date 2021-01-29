@@ -157,6 +157,7 @@ struct RedditAPI {
                     switch result {
                     case let .RefreshTokenSuccess(newAccessToken):
                         session.accessToken = newAccessToken
+                        try! KeychainUtils.updateCredentials(for: session)
                         self.fetchPosts(subreddit: subreddit, after: after, limit: limit, category: category, session: session, completion: completion)
                     default:
                         completion(.AuthenticationError("Access denied! ErrNo: \(httpResponse.statusCode)"))
