@@ -148,6 +148,8 @@ struct RedditAPI {
                 
                 print("Done! \(posts)")
                 completion(.PostFetchSuccess(posts))
+            case 401:
+                fallthrough
             case 403:
                 self.refreshAccessToken(with: session) {
                     (result) in
