@@ -67,7 +67,9 @@ class PostTableViewController: UITableViewController {
                         return newIndexPath
                     }
                     
-                    tableView.insertRows(at: newIndexPaths, with: .none)
+                    UIView.performWithoutAnimation {
+                        tableView.insertRows(at: newIndexPaths, with: .none)
+                    }
                 default:
                     print("\(#function): Nothing!")
                 }
