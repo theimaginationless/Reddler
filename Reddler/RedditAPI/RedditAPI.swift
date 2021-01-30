@@ -345,7 +345,8 @@ struct RedditAPI {
               let score = jsonPostData["score"] as? Int,
               let permalink = jsonPostData["permalink"] as? String,
               let numComments = jsonPostData["num_comments"] as? Int,
-              let author = jsonPostData["author"] as? String
+              let author = jsonPostData["author"] as? String,
+              let name = jsonPostData["name"] as? String
         else {
             print("\(#function): parse post JSON failed!")
             return nil
@@ -357,6 +358,7 @@ struct RedditAPI {
         let saved = (jsonPostData["saved"] as? Bool) ?? false
         let post = RedditPost()
         post.author = author
+        post.name = name
         post.created = created
         post.id = id
         post.likes = likes

@@ -9,6 +9,7 @@ import UIKit
 
 class RedditPost {
     var id: String
+    var name: String
     var subreddit: String
     var title: String
     var selftext: String
@@ -35,6 +36,7 @@ class RedditPost {
         self.saved = false
         self.link = ""
         self.permalink = ""
+        self.name = ""
         self.images = [UIImage]()
     }
 }
