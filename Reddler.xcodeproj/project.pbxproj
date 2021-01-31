@@ -12,6 +12,7 @@
 		B23D5F1C25B87ED4006238F8 /* Startup.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B23D5F1B25B87ED4006238F8 /* Startup.storyboard */; };
 		B23D5F2125B88757006238F8 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = B23D5F2025B88757006238F8 /* Session.swift */; };
 		B23D5F3B25B8D5A3006238F8 /* KeychainUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B23D5F3A25B8D5A3006238F8 /* KeychainUtils.swift */; };
+		B2841E1425C6E1C0003774FA /* ProcessingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2841E1325C6E1C0003774FA /* ProcessingIndicator.swift */; };
 		B29A30FC25ADC76D0013D067 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29A30FB25ADC76D0013D067 /* AppDelegate.swift */; };
 		B29A30FE25ADC76D0013D067 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29A30FD25ADC76D0013D067 /* SceneDelegate.swift */; };
 		B29A310325ADC76D0013D067 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B29A310125ADC76D0013D067 /* Main.storyboard */; };
@@ -56,6 +57,7 @@
 		B23D5F1B25B87ED4006238F8 /* Startup.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Startup.storyboard; sourceTree = "<group>"; };
 		B23D5F2025B88757006238F8 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		B23D5F3A25B8D5A3006238F8 /* KeychainUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainUtils.swift; sourceTree = "<group>"; };
+		B2841E1325C6E1C0003774FA /* ProcessingIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessingIndicator.swift; sourceTree = "<group>"; };
 		B29A30F825ADC76D0013D067 /* Reddler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reddler.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B29A30FB25ADC76D0013D067 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B29A30FD25ADC76D0013D067 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -152,6 +154,7 @@
 				B2EF473725C23C7F009CCD1D /* RoundedCornerButton.swift */,
 				B2EF474125C33B68009CCD1D /* PostStore.swift */,
 				B2EF473C25C33A8B009CCD1D /* PostTableViewDataSource.swift */,
+				B2841E1325C6E1C0003774FA /* ProcessingIndicator.swift */,
 			);
 			path = Reddler;
 			sourceTree = "<group>";
@@ -339,6 +342,7 @@
 				B2EF473D25C33A8B009CCD1D /* PostTableViewDataSource.swift in Sources */,
 				B2AC3C4825C4497500F302EC /* User.swift in Sources */,
 				B29A317625AF07550013D067 /* NotificationNames.swift in Sources */,
+				B2841E1425C6E1C0003774FA /* ProcessingIndicator.swift in Sources */,
 				B29A30FE25ADC76D0013D067 /* SceneDelegate.swift in Sources */,
 				B29A316E25AEB0090013D067 /* RedditAPI.swift in Sources */,
 			);
