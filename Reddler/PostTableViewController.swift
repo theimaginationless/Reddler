@@ -35,10 +35,8 @@ class PostTableViewController: UITableViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         let rootView = UIApplication.shared.windows.first!
-        let processingIndicatorTag = 1
-        OperationQueue.main.addOperation {
-            self.addActivityIndicator(at: rootView, tag: processingIndicatorTag)
-        }
+        let processingIndicator = self.prepareActivityIndicator(at: rootView)
+        processingIndicator.startAnimating()
         
         RedditAPI.fetchPosts(subreddit: self.currentSubreddit, limit: 20, category: self.category, session: self.session) {
             (result) in
@@ -52,11 +50,10 @@ class PostTableViewController: UITableViewController {
                     print("\(#function): Nothing!")
                 }
                 
-                let processingIndicator = rootView.viewWithTag(processingIndicatorTag) as? ProcessingIndicator
-                UIView.animate(withDuration: 0.5, animations: {processingIndicator?.alpha = 0.0})  {
+                UIView.animate(withDuration: 0.5, animations: {processingIndicator.alpha = 0.0})  {
                     finished in
-                    processingIndicator?.stopAnimating()
-                    processingIndicator?.removeFromSuperview()
+                    processingIndicator.stopAnimating()
+                    processingIndicator.removeFromSuperview()
                 }
             }
         }
@@ -74,21 +71,13 @@ class PostTableViewController: UITableViewController {
         }
     }
     
-    func addActivityIndicator(at rootView: UIView, tag: Int) {
+    func prepareActivityIndicator(at rootView: UIView) -> ProcessingIndicator {
         let rootFrame = rootView.frame
         let processIndicator = ProcessingIndicator(frame: rootFrame)
-        processIndicator.tag = tag
         processIndicator.translatesAutoresizingMaskIntoConstraints = false
         rootView.addSubview(processIndicator)
         processIndicator.center = rootView.center
-        processIndicator.startAnimating()
-    }
-    
-    func removeActivityIndicator(from: UIView, tag: Int) {
-        let rootView = UIApplication.shared.windows.first
-        let view = rootView?.viewWithTag(tag) as? ProcessingIndicator
-        view?.stopAnimating()
-        view?.removeFromSuperview()
+        return processIndicator
     }
     
     func loadMore(tableView: UITableView, indexPath: IndexPath, limit: Int, category: RedditEndpoint, session: Session) {
