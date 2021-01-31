@@ -12,12 +12,24 @@ class PostTableViewController: UITableViewController {
     var postDataSource = PostTableViewDataSource()
     var lastTriggeredIndex = 0
     var navigationBar: UINavigationBar!
+    var currentSubreddit: String?
+    var category: RedditEndpoint = .new
+    @IBOutlet var subredditTitleLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.dataSource = self.postDataSource
         self.tableView.delegate = self
         self.navigationBar = self.navigationController!.navigationBar
+        self.subredditTitleLabel = UILabel()
+        if let subreddit = self.currentSubreddit {
+            self.subredditTitleLabel.text = "r/\(subreddit)"
+        }
+        else {
+            self.subredditTitleLabel.text = "\(NSLocalizedString("Home", comment: "Home indicating main subreddit"))"
+        }
+        
+        self.navigationBar.topItem!.titleView = self.subredditTitleLabel
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -28,7 +40,7 @@ class PostTableViewController: UITableViewController {
             self.addActivityIndicator(at: rootView, tag: processingIndicatorTag)
         }
         
-        RedditAPI.fetchPosts(limit: 20, category: .hot, session: self.session) {
+        RedditAPI.fetchPosts(subreddit: self.currentSubreddit, limit: 20, category: self.category, session: self.session) {
             (result) in
             
             OperationQueue.main.addOperation {
@@ -58,7 +70,7 @@ class PostTableViewController: UITableViewController {
         
         if triggeredIndex == indexPath.row {
             self.lastTriggeredIndex = triggeredIndex
-            self.loadMore(tableView: tableView, indexPath: indexPath, limit: 20, category: .hot, session: self.session)
+            self.loadMore(tableView: tableView, indexPath: indexPath, limit: 20, category: self.category, session: self.session)
         }
     }
     
@@ -81,7 +93,7 @@ class PostTableViewController: UITableViewController {
     
     func loadMore(tableView: UITableView, indexPath: IndexPath, limit: Int, category: RedditEndpoint, session: Session) {
         let lastPost = self.postDataSource.posts!.last!
-        RedditAPI.fetchPosts(after: lastPost.name, limit: limit, category: category, session: session) {
+        RedditAPI.fetchPosts(subreddit: self.currentSubreddit, after: lastPost.name, limit: limit, category: category, session: session) {
             (result) in
 
             DispatchQueue.main.async {

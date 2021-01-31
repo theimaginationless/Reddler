@@ -12,8 +12,8 @@ enum URLs: String {
 }
 
 enum RedditEndpoint: String {
-    case hot = "/hot"
-    case new = "/new"
+    case hot = "hot"
+    case new = "new"
 }
 
 enum ResponseType: String {
