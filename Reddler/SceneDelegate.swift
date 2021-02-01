@@ -25,7 +25,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         if let session = try? KeychainUtils.loadCredentials(for: RedditConfig.account) {
             let mainSB = UIStoryboard(name: "Main", bundle: nil)
-            guard let mainNC = mainSB.instantiateInitialViewController(),
+            guard let mainNC = mainSB.instantiateInitialViewController() as? UINavigationController,
                   let postTableVC = mainNC.children.first as? PostTableViewController
             else {
                 print("Cannot create PostTableViewController.")

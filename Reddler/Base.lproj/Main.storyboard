@@ -3,6 +3,7 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -30,7 +31,7 @@
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wDz-kF-u9E">
+                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wDz-kF-u9E">
                                             <rect key="frame" x="20" y="69" width="374" height="183.5"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" relation="lessThanOrEqual" constant="250" id="Dar-9n-Tws"/>
@@ -162,6 +163,7 @@
                                     <outlet property="scoreLabel" destination="frl-6a-mE1" id="yfM-Zs-z2s"/>
                                     <outlet property="subredditLabel" destination="4YS-Ud-GDh" id="sdy-jr-Syt"/>
                                     <outlet property="titleLabel" destination="ewO-el-8eI" id="hWq-Jg-fq0"/>
+                                    <segue destination="cdT-8q-OWY" kind="show" identifier="ShowPostDetail" id="s6Z-OI-A1s"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -175,6 +177,44 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oyO-1n-4nM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="704.34782608695662" y="75.669642857142847"/>
+        </scene>
+        <!--Title-->
+        <scene sceneID="bTe-V5-dh8">
+            <objects>
+                <viewController id="cdT-8q-OWY" customClass="PostDetailViewController" customModule="Reddler" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="NfQ-SI-VFo">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="fku-qy-2Jc">
+                                <rect key="frame" x="0.0" y="88" width="414" height="774"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                <color key="textColor" systemColor="labelColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                <dataDetectorType key="dataDetectorTypes" link="YES" calendarEvent="YES"/>
+                            </textView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="LeU-lI-rQp"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="fku-qy-2Jc" firstAttribute="leading" secondItem="LeU-lI-rQp" secondAttribute="leading" id="7RS-SF-zge"/>
+                            <constraint firstItem="LeU-lI-rQp" firstAttribute="bottom" secondItem="fku-qy-2Jc" secondAttribute="bottom" id="7tw-tw-itF"/>
+                            <constraint firstItem="fku-qy-2Jc" firstAttribute="centerX" secondItem="LeU-lI-rQp" secondAttribute="centerX" id="GLW-3K-buD"/>
+                            <constraint firstItem="fku-qy-2Jc" firstAttribute="top" secondItem="LeU-lI-rQp" secondAttribute="top" id="HX3-yw-Sgk"/>
+                            <constraint firstItem="LeU-lI-rQp" firstAttribute="trailing" secondItem="fku-qy-2Jc" secondAttribute="trailing" id="efM-zR-QcM"/>
+                            <constraint firstItem="fku-qy-2Jc" firstAttribute="centerY" secondItem="LeU-lI-rQp" secondAttribute="centerY" id="ehl-Gb-bPh"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Title" id="QbP-kQ-oJ0"/>
+                    <connections>
+                        <outlet property="contentTextView" destination="fku-qy-2Jc" id="4nr-xa-6li"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="MFG-o2-M8i" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1553.6231884057972" y="75.669642857142847"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="58F-pI-43Q">

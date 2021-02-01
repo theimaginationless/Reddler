@@ -30,10 +30,7 @@ class PostTableViewController: UITableViewController {
         }
         
         self.navigationBar.topItem!.titleView = self.subredditTitleLabel
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+        
         let rootView = UIApplication.shared.windows.first!
         let processingIndicator = self.prepareActivityIndicator(at: rootView)
         processingIndicator.startAnimating()
@@ -59,6 +56,11 @@ class PostTableViewController: UITableViewController {
         }
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+    }
+    
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let triggeredIndex = self.postDataSource.posts!.count - 1
         guard triggeredIndex > self.lastTriggeredIndex else {
@@ -78,6 +80,24 @@ class PostTableViewController: UITableViewController {
         rootView.addSubview(processIndicator)
         processIndicator.center = rootView.center
         return processIndicator
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        switch segue.identifier {
+        case "ShowPostDetail":
+            guard let destination = segue.destination as? PostDetailViewController,
+                  let cell = sender as? PostTableViewCell,
+                  let indexPath = self.tableView.indexPath(for: cell),
+                  let post = self.postDataSource.posts?[indexPath.row]
+            else {
+                print("Cannot initialize data for segue: \(String(describing: segue.identifier))")
+                return
+            }
+            
+            destination.post = post
+        default:
+            print("Nothing for segue: \(String(describing: segue.identifier))")
+        }
     }
     
     func loadMore(tableView: UITableView, indexPath: IndexPath, limit: Int, category: RedditEndpoint, session: Session) {
