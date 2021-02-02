@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ProcessingIndicator: UIView {
+class UIProgressIndicatorView: UIView {
     var activityIndicator: UIActivityIndicatorView
     var cornerRadius: CGFloat = 15
     
@@ -24,6 +24,7 @@ class ProcessingIndicator: UIView {
     }
     
     private func initialize(frame: CGRect) {
+        self.activityIndicator.hidesWhenStopped = false
         let defaultFrame = CGRect(x: 0, y: 0, width: 100, height: 100)
         let frameView = UIVisualEffectView(frame: defaultFrame)
         let blurEffect = UIBlurEffect(style: .systemMaterial)

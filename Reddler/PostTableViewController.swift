@@ -47,9 +47,9 @@ class PostTableViewController: UITableViewController {
                     print("\(#function): Nothing!")
                 }
                 
+                processingIndicator.stopAnimating()
                 UIView.animate(withDuration: 0.5, animations: {processingIndicator.alpha = 0.0})  {
                     finished in
-                    processingIndicator.stopAnimating()
                     processingIndicator.removeFromSuperview()
                 }
             }
@@ -73,9 +73,9 @@ class PostTableViewController: UITableViewController {
         }
     }
     
-    func prepareActivityIndicator(at rootView: UIView) -> ProcessingIndicator {
+    func prepareActivityIndicator(at rootView: UIView) -> UIProgressIndicatorView {
         let rootFrame = rootView.frame
-        let processIndicator = ProcessingIndicator(frame: rootFrame)
+        let processIndicator = UIProgressIndicatorView(frame: rootFrame)
         processIndicator.translatesAutoresizingMaskIntoConstraints = false
         rootView.addSubview(processIndicator)
         processIndicator.center = rootView.center
