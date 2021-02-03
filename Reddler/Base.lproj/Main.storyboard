@@ -336,14 +336,6 @@
             </objects>
             <point key="canvasLocation" x="1477" y="278"/>
         </scene>
-        <!--Split View Controller-->
-        <scene sceneID="LJ4-ZF-swP">
-            <objects>
-                <splitViewController allowDoubleColumnStyle="YES" id="0Gd-Dz-mfE" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="j95-mR-eaz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-2316" y="-409"/>
-        </scene>
         <!--Navigation Controller-->
         <scene sceneID="58F-pI-43Q">
             <objects>
