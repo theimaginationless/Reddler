@@ -22,6 +22,9 @@ class PostTableViewController: UITableViewController {
         self.tableView.delegate = self
         self.navigationBar = self.navigationController!.navigationBar
         self.subredditTitleLabel = UILabel()
+        let openSubredditsListGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.showSubreddits(gesture:)))
+        self.subredditTitleLabel.addGestureRecognizer(openSubredditsListGestureRecognizer)
+        self.subredditTitleLabel.isUserInteractionEnabled = true
         if let subreddit = self.currentSubreddit {
             self.subredditTitleLabel.text = "r/\(subreddit)"
         }
@@ -30,11 +33,28 @@ class PostTableViewController: UITableViewController {
         }
         
         self.navigationBar.topItem!.titleView = self.subredditTitleLabel
-        
+        let refreshControl = UIRefreshControl()
+        let handler: (UIAction) -> Void = {
+            _ in
+            self.reloadPosts {
+                self.refreshControl?.endRefreshing()
+            }
+        }
+        refreshControl.addAction(UIAction(handler: handler), for: .valueChanged)
+        self.refreshControl = refreshControl
         let rootView = UIApplication.shared.windows.first!
         let processingIndicator = self.prepareActivityIndicator(at: rootView)
         processingIndicator.startAnimating()
-        
+        self.reloadPosts {
+            processingIndicator.stopAnimating()
+            UIView.animate(withDuration: 0.5, animations: {processingIndicator.alpha = 0.0})  {
+                finished in
+                processingIndicator.removeFromSuperview()
+            }
+        }
+    }
+    
+    @objc private func reloadPosts(completion: (() -> Void)? = nil) {
         RedditAPI.fetchPosts(subreddit: self.currentSubreddit, limit: 20, category: self.category, session: self.session) {
             (result) in
             
@@ -47,10 +67,8 @@ class PostTableViewController: UITableViewController {
                     print("\(#function): Nothing!")
                 }
                 
-                processingIndicator.stopAnimating()
-                UIView.animate(withDuration: 0.5, animations: {processingIndicator.alpha = 0.0})  {
-                    finished in
-                    processingIndicator.removeFromSuperview()
+                if let completionForExecute = completion {
+                    completionForExecute()
                 }
             }
         }
@@ -98,6 +116,18 @@ class PostTableViewController: UITableViewController {
         default:
             print("Nothing for segue: \(String(describing: segue.identifier))")
         }
+    }
+    
+    @objc private func showSubreddits(gesture: UIGestureRecognizer) {
+        let mainSB = UIStoryboard(name: "Main", bundle: nil)
+        guard let subredditsTableVC = mainSB.instantiateViewController(identifier: "SubredditsTableViewController") as? SubredditsTableViewController
+        else {
+            print("Cannot instantiate VC: SubredditsTableViewController")
+            return
+        }
+        
+        subredditsTableVC.modalPresentationStyle = .popover
+        self.present(subredditsTableVC, animated: true)
     }
     
     func loadMore(tableView: UITableView, indexPath: IndexPath, limit: Int, category: RedditEndpoint, session: Session) {

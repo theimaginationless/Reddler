@@ -20,6 +20,7 @@ class PostDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = self.post?.title
+        self.contentTextView.textContainer.lineFragmentPadding = 0
         self.contentTextView.text = self.post.selftext
         self.titleLabel.text = self.post.title
         self.authorLabel.text = self.post.author
