@@ -89,7 +89,7 @@ class PostTableViewController: UITableViewController, SwitchSubredditDelegate {
         processingIndicator.startAnimating()
         self.reloadPosts {
             processingIndicator.stopAnimating()
-            UIView.animate(withDuration: 0.5, animations: {processingIndicator.alpha = 0.0})  {
+            UIView.animate(withDuration: 0.1, animations: {processingIndicator.alpha = 0.0})  {
                 finished in
                 processingIndicator.removeFromSuperview()
             }
@@ -104,7 +104,7 @@ class PostTableViewController: UITableViewController, SwitchSubredditDelegate {
                 switch result {
                 case let .PostFetchSuccess(posts):
                     self.postDataSource.posts = posts
-                    self.tableView.reloadData()
+                    UIView.transition(with: self.tableView, duration: 0.1, options: .transitionCrossDissolve, animations: {self.tableView.alpha = 0; self.tableView.reloadData(); self.tableView.alpha = 1})
                 default:
                     print("\(#function): Nothing!")
                 }
