@@ -161,6 +161,8 @@ class PostTableViewController: UITableViewController, SwitchSubredditDelegate {
     }
     
     func switchSubreddit(to subreddit: Subreddit) {
+        let indexPath = IndexPath(row: 0, section: 0)
+        self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
         self.currentSubreddit = subreddit
         let processingIndicator = self.processingIndicator
         processingIndicator.startAnimating()
@@ -174,12 +176,16 @@ class PostTableViewController: UITableViewController, SwitchSubredditDelegate {
     }
     
     @objc private func showSubreddits(gesture: UIGestureRecognizer) {
-        self.present(subredditsTableVC!, animated: true)
+        guard let vc = self.subredditsTableVC else {
+            return
+        }
+        
+        self.present(vc, animated: true)
     }
     
     func loadMore(tableView: UITableView, indexPath: IndexPath, limit: Int, category: RedditEndpoint, session: Session) {
         let lastPost = self.postDataSource.posts!.last!
-        RedditAPI.fetchPosts(subreddit: self.currentSubreddit!.displayNamePrefixed, after: lastPost.name, limit: limit, category: category, session: session) {
+        RedditAPI.fetchPosts(subreddit: self.currentSubreddit?.displayNamePrefixed, after: lastPost.name, limit: limit, category: category, session: session) {
             (result) in
 
             DispatchQueue.main.async {

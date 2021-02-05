@@ -362,6 +362,7 @@
                                             <constraint firstItem="SVg-hx-gEX" firstAttribute="leading" secondItem="f9d-T6-2af" secondAttribute="trailing" constant="3" id="FMl-v7-TcX"/>
                                             <constraint firstItem="STo-yV-BZZ" firstAttribute="bottom" secondItem="f9d-T6-2af" secondAttribute="bottom" id="Goz-Ea-PLo"/>
                                             <constraint firstItem="SVg-hx-gEX" firstAttribute="centerY" secondItem="f9d-T6-2af" secondAttribute="centerY" id="I3X-aU-sWP"/>
+                                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="STo-yV-BZZ" secondAttribute="bottom" constant="8" id="Ost-ij-QMK"/>
                                             <constraint firstItem="STo-yV-BZZ" firstAttribute="leading" secondItem="SVg-hx-gEX" secondAttribute="trailing" constant="4" id="PFj-Pt-pH9"/>
                                             <constraint firstItem="d3w-Nv-T4T" firstAttribute="top" secondItem="Vtw-kp-wPr" secondAttribute="bottom" constant="8" id="QgL-pE-Rsp"/>
                                             <constraint firstItem="evk-Vv-nRi" firstAttribute="leading" secondItem="IqF-87-CPr" secondAttribute="leading" id="S93-ik-h6E"/>
@@ -411,7 +412,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MFG-o2-M8i" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1477" y="278"/>
+            <point key="canvasLocation" x="1476.8115942028987" y="277.90178571428572"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="58F-pI-43Q">
