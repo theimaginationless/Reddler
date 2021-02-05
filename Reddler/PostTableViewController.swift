@@ -7,13 +7,49 @@
 
 import UIKit
 
-class PostTableViewController: UITableViewController {    
+class PostTableViewController: UITableViewController, SwitchSubredditDelegate {
     var session: Session!
     var postDataSource = PostTableViewDataSource()
+    var subredditDataSource = SubredditTableViewDataSource()
     var lastTriggeredIndex = 0
     var navigationBar: UINavigationBar!
-    var currentSubreddit: String?
+    var currentSubreddit: Subreddit? {
+        didSet {
+            if let subreddit = self.currentSubreddit {
+                self.subredditTitleLabel.text = subreddit.displayNamePrefixed
+            }
+            else {
+                self.subredditTitleLabel.text = "\(NSLocalizedString("Home", comment: "Home indicating main subreddit"))"
+            }
+            self.subredditTitleLabel.sizeToFit()
+        }
+    }
     var category: RedditEndpoint = .new
+    var processingIndicator: UIProgressIndicatorView {
+        get {
+            let rootView = UIApplication.shared.windows.first!
+            let processingIndicator = self.prepareActivityIndicator(at: rootView)
+            return processingIndicator
+        }
+    }
+    lazy var subredditsTableVC: SubredditsTableViewController? = {
+        let mainSB = UIStoryboard(name: "Main", bundle: nil)
+        guard let subredditsTableVC = mainSB.instantiateViewController(identifier: "SubredditsTableViewController") as? SubredditsTableViewController
+        else {
+            print("Cannot instantiate VC: SubredditsTableViewController")
+            return nil
+        }
+        
+        subredditsTableVC.switchSubredditDelegate = self
+        subredditsTableVC.session = self.session
+        subredditsTableVC.subredditDataSource = self.subredditDataSource
+        subredditsTableVC.modalPresentationStyle = .popover
+        return subredditsTableVC
+    }()
+    private lazy var concurrencyDispatchQueue: DispatchQueue = {
+        let queue = DispatchQueue(label: "me.theimless.reddler.concurrencyDispatchQueue", qos: .userInitiated, attributes: .concurrent, autoreleaseFrequency: .inherit, target: nil)
+        return queue
+    }()
     @IBOutlet var subredditTitleLabel: UILabel!
     
     override func viewDidLoad() {
@@ -25,14 +61,21 @@ class PostTableViewController: UITableViewController {
         let openSubredditsListGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.showSubreddits(gesture:)))
         self.subredditTitleLabel.addGestureRecognizer(openSubredditsListGestureRecognizer)
         self.subredditTitleLabel.isUserInteractionEnabled = true
-        if let subreddit = self.currentSubreddit {
-            self.subredditTitleLabel.text = "r/\(subreddit)"
-        }
-        else {
-            self.subredditTitleLabel.text = "\(NSLocalizedString("Home", comment: "Home indicating main subreddit"))"
-        }
-        
         self.navigationBar.topItem!.titleView = self.subredditTitleLabel
+        self.currentSubreddit = nil
+        RedditAPI.fetchSubreddits(limit: 20, session: self.session) {
+            result in
+            
+            OperationQueue.main.addOperation {
+                switch result {
+                case let .SubredditsFetchSuccess(subreddits):
+                    self.subredditDataSource.subreddits = subreddits
+                    self.subredditsTableVC?.tableView.reloadData()
+                default:
+                    print("Nothing!")
+                }
+            }
+        }
         let refreshControl = UIRefreshControl()
         let handler: (UIAction) -> Void = {
             _ in
@@ -42,8 +85,7 @@ class PostTableViewController: UITableViewController {
         }
         refreshControl.addAction(UIAction(handler: handler), for: .valueChanged)
         self.refreshControl = refreshControl
-        let rootView = UIApplication.shared.windows.first!
-        let processingIndicator = self.prepareActivityIndicator(at: rootView)
+        let processingIndicator = self.processingIndicator
         processingIndicator.startAnimating()
         self.reloadPosts {
             processingIndicator.stopAnimating()
@@ -55,7 +97,7 @@ class PostTableViewController: UITableViewController {
     }
     
     @objc private func reloadPosts(completion: (() -> Void)? = nil) {
-        RedditAPI.fetchPosts(subreddit: self.currentSubreddit, limit: 20, category: self.category, session: self.session) {
+        RedditAPI.fetchPosts(subreddit: self.currentSubreddit?.displayNamePrefixed, limit: 20, category: self.category, session: self.session) {
             (result) in
             
             OperationQueue.main.addOperation {
@@ -118,21 +160,26 @@ class PostTableViewController: UITableViewController {
         }
     }
     
-    @objc private func showSubreddits(gesture: UIGestureRecognizer) {
-        let mainSB = UIStoryboard(name: "Main", bundle: nil)
-        guard let subredditsTableVC = mainSB.instantiateViewController(identifier: "SubredditsTableViewController") as? SubredditsTableViewController
-        else {
-            print("Cannot instantiate VC: SubredditsTableViewController")
-            return
+    func switchSubreddit(to subreddit: Subreddit) {
+        self.currentSubreddit = subreddit
+        let processingIndicator = self.processingIndicator
+        processingIndicator.startAnimating()
+        self.reloadPosts {
+            processingIndicator.stopAnimating()
+            UIView.animate(withDuration: 0.5, animations: {processingIndicator.alpha = 0.0})  {
+                finished in
+                processingIndicator.removeFromSuperview()
+            }
         }
-        
-        subredditsTableVC.modalPresentationStyle = .popover
-        self.present(subredditsTableVC, animated: true)
+    }
+    
+    @objc private func showSubreddits(gesture: UIGestureRecognizer) {
+        self.present(subredditsTableVC!, animated: true)
     }
     
     func loadMore(tableView: UITableView, indexPath: IndexPath, limit: Int, category: RedditEndpoint, session: Session) {
         let lastPost = self.postDataSource.posts!.last!
-        RedditAPI.fetchPosts(subreddit: self.currentSubreddit, after: lastPost.name, limit: limit, category: category, session: session) {
+        RedditAPI.fetchPosts(subreddit: self.currentSubreddit!.displayNamePrefixed, after: lastPost.name, limit: limit, category: category, session: session) {
             (result) in
 
             DispatchQueue.main.async {

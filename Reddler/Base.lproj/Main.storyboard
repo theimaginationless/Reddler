@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="PostTableViewCell" translatesAutoresizingMaskIntoConstraints="NO" id="8zu-8I-5xf" customClass="PostTableViewCell" customModule="Reddler" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="PostTableViewCell" translatesAutoresizingMaskIntoConstraints="NO" id="8zu-8I-5xf" customClass="PostTableViewCell" customModule="Reddler" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="55.5" width="414" height="510"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="8zu-8I-5xf" id="jh0-Np-dmb">
@@ -174,6 +174,7 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="Reddler" id="zv8-w5-WJf"/>
                     <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="2xi-p6-h9r">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </refreshControl>
                 </tableViewController>
@@ -195,7 +196,7 @@
                             <textInputTraits key="textInputTraits"/>
                         </searchBar>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SubredditTableViewCell" rowHeight="93" id="iIb-NT-jco">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SubredditTableViewCell" rowHeight="93" id="iIb-NT-jco" customClass="SubredditTableViewCell" customModule="Reddler" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="72" width="414" height="93"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="iIb-NT-jco" id="73g-yn-oKQ">
@@ -208,9 +209,12 @@
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IEQ-Xk-wtC" userLabel="FavoriteButton">
+                                        <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="760" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IEQ-Xk-wtC" userLabel="FavoriteButton">
                                             <rect key="frame" x="372" y="8" width="22" height="22"/>
                                             <state key="normal" image="star" catalog="system"/>
+                                            <connections>
+                                                <action selector="favoriteButtonAction:" destination="iIb-NT-jco" eventType="touchUpInside" id="twm-1G-ILR"/>
+                                            </connections>
                                         </button>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Subreddit description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lH7-hc-E8s">
                                             <rect key="frame" x="20" y="36.5" width="148" height="18"/>
@@ -231,6 +235,11 @@
                                         <constraint firstAttribute="trailing" secondItem="IEQ-Xk-wtC" secondAttribute="trailing" constant="20" symbolic="YES" id="inU-jz-pqY"/>
                                     </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="descriptionLabel" destination="lH7-hc-E8s" id="6vy-DB-HYI"/>
+                                    <outlet property="favoriteButton" destination="IEQ-Xk-wtC" id="af2-zd-gyk"/>
+                                    <outlet property="titleLabel" destination="Goi-ee-kPx" id="1HN-8N-iPL"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
