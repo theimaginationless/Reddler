@@ -20,12 +20,11 @@ class PostTableViewController: UITableViewController, SwitchSubredditDelegate {
     var currentSubreddit: Subreddit? {
         didSet {
             if let subreddit = self.currentSubreddit {
-                self.subredditTitleLabel.text = subreddit.displayNamePrefixed
+                self.title = subreddit.displayNamePrefixed
             }
             else {
-                self.subredditTitleLabel.text = "\(NSLocalizedString("Home", comment: "Home indicating main subreddit"))"
+                self.title = "\(NSLocalizedString("Home", comment: "Home indicating main subreddit"))"
             }
-            self.subredditTitleLabel.sizeToFit()
         }
     }
     var category: RedditEndpoint = .new
@@ -47,9 +46,6 @@ class PostTableViewController: UITableViewController, SwitchSubredditDelegate {
         super.viewDidLoad()
         self.tableView.dataSource = self.postDataSource
         self.tableView.delegate = self
-        self.navigationBar = self.navigationController!.navigationBar
-        self.subredditTitleLabel = UILabel()
-        self.navigationBar.topItem!.titleView = self.subredditTitleLabel
         self.currentSubreddit = nil
         let refreshControl = UIRefreshControl()
         let handler: (UIAction) -> Void = {
@@ -137,6 +133,13 @@ class PostTableViewController: UITableViewController, SwitchSubredditDelegate {
     }
     
     func switchSubreddit(to subreddit: Subreddit?) {
+        if let navController = self.navigationController,
+           let topController = navController.topViewController {
+            if topController !== self {
+                navController.popViewController(animated: true)
+            }
+        }
+        
         let indexPath = IndexPath(row: 0, section: 0)
         self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
         self.currentSubreddit = subreddit
