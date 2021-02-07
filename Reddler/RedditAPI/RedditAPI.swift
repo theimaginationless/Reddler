@@ -171,6 +171,7 @@ struct RedditAPI {
                     switch result {
                     case let .RefreshTokenSuccess(newAccessToken):
                         session.accessToken = newAccessToken
+                        print("Refreshed: \(session.accessToken)")
                         try! KeychainUtils.updateCredentials(for: session)
                         self.fetchSubreddits(after: after, limit: limit, session: session, completion: completion)
                     default:
@@ -233,6 +234,7 @@ struct RedditAPI {
                     switch result {
                     case let .RefreshTokenSuccess(newAccessToken):
                         session.accessToken = newAccessToken
+                        print("Refreshed: \(session.accessToken)")
                         try! KeychainUtils.updateCredentials(for: session)
                         self.fetchPosts(subreddit: subreddit, after: after, limit: limit, category: category, session: session, completion: completion)
                     default:

@@ -25,15 +25,25 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         if let session = try? KeychainUtils.loadCredentials(for: RedditConfig.account) {
             let mainSB = UIStoryboard(name: "Main", bundle: nil)
-            guard let mainNC = mainSB.instantiateInitialViewController() as? UINavigationController,
+            guard let mainSVC = mainSB.instantiateInitialViewController() as? UISplitViewController,
+                  let subredditsTableVC = mainSVC.viewController(for: .primary) as? SubredditsTableViewController,
+                  let mainNC = mainSVC.viewController(for: .secondary) as? UINavigationController,
                   let postTableVC = mainNC.children.first as? PostTableViewController
             else {
                 print("Cannot create PostTableViewController.")
                 return
             }
             
+            let subredditDS = SubredditTableViewDataSource()
+            let postDS = PostTableViewDataSource()
+            subredditsTableVC.switchSubredditDelegate = postTableVC
+            subredditsTableVC.session = session
+            subredditsTableVC.subredditDataSource = subredditDS
+            subredditsTableVC.modalPresentationStyle = .popover
             postTableVC.session = session
-            self.window!.rootViewController = mainNC
+            postTableVC.postDataSource = postDS
+            postTableVC.postTableReloadDelegate = subredditsTableVC
+            self.window!.rootViewController = mainSVC
         }
         else {
             let startupSB = UIStoryboard(name: "Startup", bundle: nil)

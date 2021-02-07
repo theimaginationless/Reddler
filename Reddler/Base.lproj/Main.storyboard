@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="e3l-GO-9u3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="8QL-vT-thn">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="PostTableViewCell" translatesAutoresizingMaskIntoConstraints="NO" id="8zu-8I-5xf" customClass="PostTableViewCell" customModule="Reddler" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="PostTableViewCell" translatesAutoresizingMaskIntoConstraints="NO" id="8zu-8I-5xf" customClass="PostTableViewCell" customModule="Reddler" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="55.5" width="414" height="510"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="8zu-8I-5xf" id="jh0-Np-dmb">
@@ -182,10 +182,10 @@
             </objects>
             <point key="canvasLocation" x="704.34782608695662" y="75.669642857142847"/>
         </scene>
-        <!--Subreddits Table View Controller-->
+        <!--Subreddits-->
         <scene sceneID="C8E-nF-pzu">
             <objects>
-                <tableViewController storyboardIdentifier="SubredditsTableViewController" id="NZg-iJ-UBe" customClass="SubredditsTableViewController" customModule="Reddler" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="SubredditsTableViewController" title="Subreddits" id="NZg-iJ-UBe" customClass="SubredditsTableViewController" customModule="Reddler" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="o4c-NT-x06">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -253,7 +253,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="V9z-w4-iqE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="708.69565217391312" y="748.66071428571422"/>
+            <point key="canvasLocation" x="-184" y="799"/>
         </scene>
         <!--Title-->
         <scene sceneID="bTe-V5-dh8">
@@ -413,6 +413,19 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MFG-o2-M8i" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1476.8115942028987" y="277.90178571428572"/>
+        </scene>
+        <!--Split View Controller-->
+        <scene sceneID="wJA-SM-cLH">
+            <objects>
+                <splitViewController allowDoubleColumnStyle="YES" id="8QL-vT-thn" sceneMemberID="viewController">
+                    <connections>
+                        <segue destination="e3l-GO-9u3" kind="relationship" relationship="detailViewController" id="VU2-xa-hWf"/>
+                        <segue destination="NZg-iJ-UBe" kind="relationship" relationship="masterViewController" id="Sqa-yT-GKt"/>
+                    </connections>
+                </splitViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CzW-Pj-O57" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1170" y="76"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="58F-pI-43Q">

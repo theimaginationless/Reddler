@@ -8,22 +8,39 @@
 import UIKit
 
 protocol SwitchSubredditDelegate {
-    func switchSubreddit(to subreddit: Subreddit)
+    func switchSubreddit(to subreddit: Subreddit?)
 }
 
-class SubredditsTableViewController: UITableViewController {
+class SubredditsTableViewController: UITableViewController, PostTableReloadDelegate {
     @IBOutlet weak var searchBar: UISearchBar!
     var switchSubredditDelegate: SwitchSubredditDelegate?
     var session: Session!
     var subredditDataSource: SubredditTableViewDataSource?
     var lastTriggeredIndex = 0
+    var alreadyInit = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         searchBar.placeholder = NSLocalizedString("Search subreddit", comment: "Placeholder for subreddit searching field")
-        self.tableView.dataSource = self.subredditDataSource
+    }
+    
+    func prepareSubreddits() {
         self.tableView.delegate = self
-        self.tableView.reloadData()
+        self.tableView.dataSource = subredditDataSource
+        RedditAPI.fetchSubreddits(limit: 20, session: self.session) {
+            result in
+            
+            OperationQueue.main.addOperation {
+                switch result {
+                case let .SubredditsFetchSuccess(subreddits):
+                    self.subredditDataSource?.subreddits = subreddits
+                    self.tableView.reloadData()
+                default:
+                    print("Nothing!")
+                }
+            }
+        }
+        self.alreadyInit = true
     }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -44,9 +61,19 @@ class SubredditsTableViewController: UITableViewController {
             return
         }
         
-        self.dismiss(animated: true) {
-            self.switchSubredditDelegate?.switchSubreddit(to: subreddit)
+        let mainSVC = self.splitViewController
+        if (mainSVC?.isCollapsed) != nil {
+            guard let mainNC = mainSVC?.viewController(for: .secondary) as? UINavigationController,
+                  let postTableVC = mainNC.children.first as? PostTableViewController
+            else {
+                return
+            }
+            
+            postTableVC.currentSubreddit = subreddit
+            mainSVC?.showDetailViewController(postTableVC, sender: nil)
         }
+        
+        self.switchSubredditDelegate?.switchSubreddit(to: subreddit)
     }
     
     func loadMore(tableView: UITableView, indexPath: IndexPath, limit: Int, session: Session) {

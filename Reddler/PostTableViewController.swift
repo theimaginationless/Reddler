@@ -7,10 +7,14 @@
 
 import UIKit
 
+protocol PostTableReloadDelegate {
+    func prepareSubreddits()
+}
+
 class PostTableViewController: UITableViewController, SwitchSubredditDelegate {
     var session: Session!
-    var postDataSource = PostTableViewDataSource()
-    var subredditDataSource = SubredditTableViewDataSource()
+    var postDataSource: PostTableViewDataSource!
+    var postTableReloadDelegate: PostTableReloadDelegate?
     var lastTriggeredIndex = 0
     var navigationBar: UINavigationBar!
     var currentSubreddit: Subreddit? {
@@ -32,20 +36,7 @@ class PostTableViewController: UITableViewController, SwitchSubredditDelegate {
             return processingIndicator
         }
     }
-    lazy var subredditsTableVC: SubredditsTableViewController? = {
-        let mainSB = UIStoryboard(name: "Main", bundle: nil)
-        guard let subredditsTableVC = mainSB.instantiateViewController(identifier: "SubredditsTableViewController") as? SubredditsTableViewController
-        else {
-            print("Cannot instantiate VC: SubredditsTableViewController")
-            return nil
-        }
-        
-        subredditsTableVC.switchSubredditDelegate = self
-        subredditsTableVC.session = self.session
-        subredditsTableVC.subredditDataSource = self.subredditDataSource
-        subredditsTableVC.modalPresentationStyle = .popover
-        return subredditsTableVC
-    }()
+
     private lazy var concurrencyDispatchQueue: DispatchQueue = {
         let queue = DispatchQueue(label: "me.theimless.reddler.concurrencyDispatchQueue", qos: .userInitiated, attributes: .concurrent, autoreleaseFrequency: .inherit, target: nil)
         return queue
@@ -58,24 +49,8 @@ class PostTableViewController: UITableViewController, SwitchSubredditDelegate {
         self.tableView.delegate = self
         self.navigationBar = self.navigationController!.navigationBar
         self.subredditTitleLabel = UILabel()
-        let openSubredditsListGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.showSubreddits(gesture:)))
-        self.subredditTitleLabel.addGestureRecognizer(openSubredditsListGestureRecognizer)
-        self.subredditTitleLabel.isUserInteractionEnabled = true
         self.navigationBar.topItem!.titleView = self.subredditTitleLabel
         self.currentSubreddit = nil
-        RedditAPI.fetchSubreddits(limit: 20, session: self.session) {
-            result in
-            
-            OperationQueue.main.addOperation {
-                switch result {
-                case let .SubredditsFetchSuccess(subreddits):
-                    self.subredditDataSource.subreddits = subreddits
-                    self.subredditsTableVC?.tableView.reloadData()
-                default:
-                    print("Nothing!")
-                }
-            }
-        }
         let refreshControl = UIRefreshControl()
         let handler: (UIAction) -> Void = {
             _ in
@@ -94,6 +69,7 @@ class PostTableViewController: UITableViewController, SwitchSubredditDelegate {
                 processingIndicator.removeFromSuperview()
             }
         }
+        self.postTableReloadDelegate?.prepareSubreddits()
     }
     
     @objc private func reloadPosts(completion: (() -> Void)? = nil) {
@@ -104,7 +80,7 @@ class PostTableViewController: UITableViewController, SwitchSubredditDelegate {
                 switch result {
                 case let .PostFetchSuccess(posts):
                     self.postDataSource.posts = posts
-                    UIView.transition(with: self.tableView, duration: 0.1, options: .transitionCrossDissolve, animations: {self.tableView.alpha = 0; self.tableView.reloadData(); self.tableView.alpha = 1})
+                    self.tableView.reloadData()
                 default:
                     print("\(#function): Nothing!")
                 }
@@ -160,7 +136,7 @@ class PostTableViewController: UITableViewController, SwitchSubredditDelegate {
         }
     }
     
-    func switchSubreddit(to subreddit: Subreddit) {
+    func switchSubreddit(to subreddit: Subreddit?) {
         let indexPath = IndexPath(row: 0, section: 0)
         self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
         self.currentSubreddit = subreddit
@@ -173,14 +149,6 @@ class PostTableViewController: UITableViewController, SwitchSubredditDelegate {
                 processingIndicator.removeFromSuperview()
             }
         }
-    }
-    
-    @objc private func showSubreddits(gesture: UIGestureRecognizer) {
-        guard let vc = self.subredditsTableVC else {
-            return
-        }
-        
-        self.present(vc, animated: true)
     }
     
     func loadMore(tableView: UITableView, indexPath: IndexPath, limit: Int, category: RedditEndpoint, session: Session) {
