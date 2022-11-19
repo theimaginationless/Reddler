@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 enum URLs: String {
     case reddit = "https://www.reddit.com"
@@ -48,12 +49,17 @@ enum RedditApiResult {
     case UserFetchSuccess(User)
     case FetchFailed(String)
     case AuthenticationSuccess(Session)
-    case RefreshTokenSuccess(String)
+    case RefreshTokenSuccess(String, Int)
     case ClientError(String)
     case AuthenticationError(String)
     case ServerError(String)
     case UnknownError(String)
     case UnexpectedError(String)
+}
+
+enum ImagesResult {
+    case Success([UIImage])
+    case Failed
 }
 
 enum AuthenticationOpType {
@@ -66,6 +72,7 @@ struct RedditAPI {
     private static let baseAuthURL = RedditConfig.baseURL
     private static let baseURL = RedditConfig.baseURL
     private static let oauthRedirectURL = "reddler://redirect"
+    private static let refreshTokenVerificationAndRefreshDispatchGroup = DispatchGroup()
     private static let session: URLSession = {
         let config = URLSessionConfiguration.default
         return URLSession(configuration: config, delegate: nil, delegateQueue: requestConcurrencyQueue)
@@ -126,6 +133,10 @@ struct RedditAPI {
         return components.url
     }
     
+    /// Fetch list of subreddits
+    /// - Parameter after: name after that need fetch subreddit for pagination
+    /// - Parameter limit: count of returns subreddits
+    /// - Parameter session: session for perform request
     static func fetchSubreddits(after: String? = nil, limit: Int, session: Session, completion: @escaping (RedditApiResult) -> Void) {
         var params = ["limit": "\(limit)"]
         if let afterString = after {
@@ -167,11 +178,11 @@ struct RedditAPI {
             case 403:
                 self.refreshAccessToken(with: session) {
                     (result) in
-                    
+
                     switch result {
-                    case let .RefreshTokenSuccess(newAccessToken):
-                        session.accessToken = newAccessToken
-                        print("Refreshed: \(session.accessToken)")
+                    case .RefreshTokenSuccess(let newAccessToken, let expiresIn):
+                        session.token = Token(accessToken: newAccessToken, refreshToken: session.token.refreshToken, expiresIn: expiresIn, tokenType: session.token.tokenType)
+                        print("Refreshed: \(session.token.accessToken)")
                         try! KeychainUtils.updateCredentials(for: session)
                         self.fetchSubreddits(after: after, limit: limit, session: session, completion: completion)
                     default:
@@ -186,6 +197,31 @@ struct RedditAPI {
         }
     }
     
+    static func fetchImage(for image: Image, session: Session, completion: @escaping (ImagesResult) -> Void) {
+        let url = image.url
+        let request = URLRequest(url: url)
+        let task = self.session.dataTask(with: request) {
+            (data, response, error) in
+            
+            guard let imageData = data,
+                  let image = UIImage(data: imageData)
+            else {
+                completion(.Failed)
+                return
+            }
+            
+            print(image)
+            completion(.Success([image]))
+        }
+        
+        task.resume()
+    }
+    
+    /// Fetch subreddit posts
+    /// - Parameter subreddit: subreddit for that fetching posts
+    /// - Parameter after: name after that need fetch posts
+    /// - Parameter limit: count of returns posts
+    /// - Parameter session: session for perform request
     static func fetchPosts(subreddit: String? = nil, after: String? = nil, limit: Int, category: RedditEndpoint, session: Session, completion: @escaping (RedditApiResult) -> Void) {
         var params = ["limit": "\(limit)"]
         if let afterString = after {
@@ -211,7 +247,7 @@ struct RedditAPI {
                 guard let jsonDict = self.jsonDataDecoder(jsonData: data) else {
                     return
                 }
-                
+                print("json: \(jsonDict)")
                 if let bodyError = self.checkBodyError(dict: jsonDict) {
                     let errorMsg = "Unexpected response body: \(bodyError)"
                     completion(.UnexpectedError(errorMsg))
@@ -230,11 +266,11 @@ struct RedditAPI {
             case 403:
                 self.refreshAccessToken(with: session) {
                     (result) in
-                    
+
                     switch result {
-                    case let .RefreshTokenSuccess(newAccessToken):
-                        session.accessToken = newAccessToken
-                        print("Refreshed: \(session.accessToken)")
+                    case .RefreshTokenSuccess(let newAccessToken, let expiresIn):
+                        session.token = Token(accessToken: newAccessToken, refreshToken: session.token.refreshToken, expiresIn: expiresIn, tokenType: session.token.tokenType)
+                        print("Refreshed: \(session.token.accessToken)")
                         try! KeychainUtils.updateCredentials(for: session)
                         self.fetchPosts(subreddit: subreddit, after: after, limit: limit, category: category, session: session, completion: completion)
                     default:
@@ -252,7 +288,7 @@ struct RedditAPI {
     private static func generateAuthorizationHeaderParams(with session: Session? = nil, withContent: Bool) -> [String: String]? {
         var basicAuthenticationString = ""
         if let activeSession = session {
-            basicAuthenticationString = "bearer \(activeSession.accessToken)"
+            basicAuthenticationString = "bearer \(activeSession.token.accessToken)"
         }
         else {
             let authenticationString = "\(RedditConfig.clientId):"
@@ -282,7 +318,7 @@ struct RedditAPI {
         }
         var queryItems = [URLQueryItem]()
         queryItems.append(URLQueryItem(name: "grant_type", value: "refresh_token"))
-        queryItems.append(URLQueryItem(name: "refresh_token", value: session.refreshToken))
+        queryItems.append(URLQueryItem(name: "refresh_token", value: session.token.refreshToken))
         self.commonAuthenticationProcess(operationType: .refreshToken, bodyParams: queryItems, headerParams: headerParams, completion: completion)
     }
     
@@ -315,12 +351,14 @@ struct RedditAPI {
                     
                     completion(.AuthenticationSuccess(session))
                 case .refreshToken:
-                    guard let refreshedAccessToken = jsonDict["access_token"] as? String else {
+                    guard let refreshedAccessToken = jsonDict["access_token"] as? String,
+                          let expiresIn = jsonDict["expires_in"] as? Int
+                    else {
                         completion(.AuthenticationError("Empty response data."))
                         return
                     }
                     
-                    completion(.RefreshTokenSuccess(refreshedAccessToken))
+                    completion(.RefreshTokenSuccess(refreshedAccessToken, expiresIn))
                 }
                 
                 print("Done!")
@@ -495,15 +533,15 @@ struct RedditAPI {
     private static func jsonToSession(jsonDict: [String:AnyObject]?) -> Session? {
         guard let json = jsonDict,
               let accessToken = json["access_token"] as? String,
-              let refreshToken = json["refresh_token"] as? String
+              let refreshToken = json["refresh_token"] as? String,
+              let expiresIn = json["expires_in"] as? Int,
+              let tokenType = json["token_type"] as? String
         else {
             print("\(#function): parse session failed!")
             return nil
         }
         
-        let session = Session(accessToken: accessToken, refreshToken: refreshToken
-        )
-        
+        let session = Session(accessToken: accessToken, refreshToken: refreshToken, expiresIn: expiresIn, tokenType: tokenType)
         return session
     }
     

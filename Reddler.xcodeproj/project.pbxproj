@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		B200179F25CC759A00A2DCD9 /* Subreddit.swift in Sources */ = {isa = PBXBuildFile; fileRef = B200179E25CC759A00A2DCD9 /* Subreddit.swift */; };
+		B22F7C9A25DA921500C0F11C /* ImageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22F7C9925DA921500C0F11C /* ImageStore.swift */; };
+		B22F7C9F25DA989700C0F11C /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22F7C9E25DA989700C0F11C /* Image.swift */; };
 		B23D5F1225B87BEE006238F8 /* RedditConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B23D5F1125B87BEE006238F8 /* RedditConfig.swift */; };
 		B23D5F1725B87D8F006238F8 /* StartupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B23D5F1625B87D8F006238F8 /* StartupViewController.swift */; };
 		B23D5F1C25B87ED4006238F8 /* Startup.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B23D5F1B25B87ED4006238F8 /* Startup.storyboard */; };
@@ -58,6 +60,8 @@
 
 /* Begin PBXFileReference section */
 		B200179E25CC759A00A2DCD9 /* Subreddit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subreddit.swift; sourceTree = "<group>"; };
+		B22F7C9925DA921500C0F11C /* ImageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageStore.swift; sourceTree = "<group>"; };
+		B22F7C9E25DA989700C0F11C /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
 		B23D5F1125B87BEE006238F8 /* RedditConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedditConfig.swift; sourceTree = "<group>"; };
 		B23D5F1625B87D8F006238F8 /* StartupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupViewController.swift; sourceTree = "<group>"; };
 		B23D5F1B25B87ED4006238F8 /* Startup.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Startup.storyboard; sourceTree = "<group>"; };
@@ -143,6 +147,7 @@
 		B29A30FA25ADC76D0013D067 /* Reddler */ = {
 			isa = PBXGroup;
 			children = (
+				EB79004C2750C09D00CC86DE /* Stores */,
 				B29A316C25AEAFF70013D067 /* RedditAPI */,
 				B29A316625AEADCF0013D067 /* Model */,
 				B29A30FB25ADC76D0013D067 /* AppDelegate.swift */,
@@ -151,7 +156,6 @@
 				B2578B1B25CB16F6008C6947 /* SubredditsTableViewController.swift */,
 				B2EC2A5A25CC8F6D00CF0BA6 /* SubredditTableViewCell.swift */,
 				B29A313A25AEABB70013D067 /* PostTableViewController.swift */,
-				B2EC2A5525CC8EBE00CF0BA6 /* SubredditTableViewDataSource.swift */,
 				B2E48BF625C877DF008005E7 /* PostDetailViewController.swift */,
 				B29A316125AEADA00013D067 /* PostTableViewCell.swift */,
 				B29A315925AEAD430013D067 /* ImageCollectionView.swift */,
@@ -163,10 +167,8 @@
 				B29A317525AF07540013D067 /* NotificationNames.swift */,
 				B23D5F1625B87D8F006238F8 /* StartupViewController.swift */,
 				B23D5F1B25B87ED4006238F8 /* Startup.storyboard */,
-				B23D5F2025B88757006238F8 /* Session.swift */,
 				B23D5F3A25B8D5A3006238F8 /* KeychainUtils.swift */,
 				B2EF473725C23C7F009CCD1D /* RoundedCornerButton.swift */,
-				B2EF474125C33B68009CCD1D /* PostStore.swift */,
 				B2EF473C25C33A8B009CCD1D /* PostTableViewDataSource.swift */,
 				B2841E1325C6E1C0003774FA /* UIProgressIndicatorView.swift */,
 			);
@@ -194,9 +196,11 @@
 		B29A316625AEADCF0013D067 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				B2EC2A5525CC8EBE00CF0BA6 /* SubredditTableViewDataSource.swift */,
 				B29A316725AEADE80013D067 /* RedditPost.swift */,
 				B2AC3C4725C4497500F302EC /* User.swift */,
 				B200179E25CC759A00A2DCD9 /* Subreddit.swift */,
+				B22F7C9E25DA989700C0F11C /* Image.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -206,8 +210,18 @@
 			children = (
 				B29A316D25AEB0090013D067 /* RedditAPI.swift */,
 				B23D5F1125B87BEE006238F8 /* RedditConfig.swift */,
+				B23D5F2025B88757006238F8 /* Session.swift */,
 			);
 			path = RedditAPI;
+			sourceTree = "<group>";
+		};
+		EB79004C2750C09D00CC86DE /* Stores */ = {
+			isa = PBXGroup;
+			children = (
+				B22F7C9925DA921500C0F11C /* ImageStore.swift */,
+				B2EF474125C33B68009CCD1D /* PostStore.swift */,
+			);
+			path = Stores;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -359,6 +373,8 @@
 				B2EF473D25C33A8B009CCD1D /* PostTableViewDataSource.swift in Sources */,
 				B2AC3C4825C4497500F302EC /* User.swift in Sources */,
 				B2EC2A5625CC8EBE00CF0BA6 /* SubredditTableViewDataSource.swift in Sources */,
+				B22F7C9A25DA921500C0F11C /* ImageStore.swift in Sources */,
+				B22F7C9F25DA989700C0F11C /* Image.swift in Sources */,
 				B29A317625AF07550013D067 /* NotificationNames.swift in Sources */,
 				B2841E1425C6E1C0003774FA /* UIProgressIndicatorView.swift in Sources */,
 				B2E48BF725C877DF008005E7 /* PostDetailViewController.swift in Sources */,

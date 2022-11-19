@@ -35,12 +35,17 @@ class PostTableViewController: UITableViewController, SwitchSubredditDelegate {
             return processingIndicator
         }
     }
-
+    @IBOutlet weak var ImagesCollectionView: ImageCollectionView!
+    
     private lazy var concurrencyDispatchQueue: DispatchQueue = {
         let queue = DispatchQueue(label: "me.theimless.reddler.concurrencyDispatchQueue", qos: .userInitiated, attributes: .concurrent, autoreleaseFrequency: .inherit, target: nil)
         return queue
     }()
     @IBOutlet var subredditTitleLabel: UILabel!
+    
+    func loadImage(for image: Image, completion: @escaping (ImagesResult) -> Void) {
+        RedditAPI.fetchImage(for: image, session: self.session, completion: completion)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -140,6 +145,7 @@ class PostTableViewController: UITableViewController, SwitchSubredditDelegate {
             }
         }
         
+        self.lastTriggeredIndex = 0
         let indexPath = IndexPath(row: 0, section: 0)
         self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
         self.currentSubreddit = subreddit

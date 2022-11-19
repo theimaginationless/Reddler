@@ -33,7 +33,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 print("Cannot create PostTableViewController.")
                 return
             }
-            
             let subredditDS = SubredditTableViewDataSource()
             let postDS = PostTableViewDataSource()
             subredditsTableVC.switchSubredditDelegate = postTableVC

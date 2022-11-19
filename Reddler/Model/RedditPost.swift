@@ -21,5 +21,5 @@ class RedditPost {
     var link = ""
     var saved = false
     var likes = false
-    var images = [UIImage]()
+    var images = [Image]()
 }

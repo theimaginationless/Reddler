@@ -64,7 +64,10 @@ class StartupViewController: UIViewController {
                 case let .AuthenticationSuccess(session):
                     self.session = session
                     do {
-                        try KeychainUtils.saveCredentials(for: session)
+                        if let _ = try? KeychainUtils.saveCredentials(for: session) {}
+                        else {
+                            try KeychainUtils.updateCredentials(for: session)
+                        }
                     }
                     catch let error {
                         print("\(#function): \(error)")
